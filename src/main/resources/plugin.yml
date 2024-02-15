@@ -1,0 +1,11 @@
+name: LoadDistribution
+description: The plugin that handles zone transfers and borders
+version: '${version}'
+main: lol.arch.survival.LoadDistribution
+api-version: '1.16'
+author: Preva1l
+
+commands:
+  zones-reload-config:
+    description: Reloads the MultiInstancing Config
+    permission: survival.reload

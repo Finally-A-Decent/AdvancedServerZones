@@ -1,0 +1,18 @@
+border:
+  size: 20
+  centerX: 0 # Negative is West, Positive is East
+  centerZ: 0 # Negative is North, Positive is South
+  particle-color: [184, 50, 172] # RGB Value
+  particle-rainbow: false # Override particle color
+  particle-rainbow-harshness: 10 # 1 = Lowest, 10 = Highest, 0 = Solid red
+
+servers: # Must match bungee config.yml
+  north: "survival-zone-01"
+  south: "survival-zone-06"
+  east: "survival-spawn-01"
+  west: "" # Leave blank for it to be the world border
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: "abc123"
