@@ -2,7 +2,7 @@ border:
   size: 20
   centerX: 0 # Negative is West, Positive is East
   centerZ: 0 # Negative is North, Positive is South
-  particle-color: [184, 50, 172] # RGB Value
+  particle-color: [184, 50, 172] # RGB Value, Default is magenta
   particle-rainbow: false # Override particle color
   particle-rainbow-harshness: 10 # 1 = Lowest, 10 = Highest, 0 = Solid red
 

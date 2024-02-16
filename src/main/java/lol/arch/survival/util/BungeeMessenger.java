@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lol.arch.survival.LoadDistribution;
 import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,5 +23,6 @@ public class BungeeMessenger {
         output.writeUTF("Connect");
         output.writeUTF(server);
         player.sendPluginMessage(LoadDistribution.getInstance(), "BungeeCord", output.toByteArray());
+        Bukkit.broadcastMessage(server);
     }
 }

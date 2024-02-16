@@ -10,62 +10,128 @@ import org.bukkit.entity.Player;
 
 public class BorderHandler {
     public BorderHandler() {
-
         TaskManager.Async.runTask(LoadDistribution.getInstance(), () -> {
+            double size = Config.getBorderSize();
+            double centerX = Config.getBorderCenterX();
+            double centerZ = Config.getBorderCenterZ();
+            double north = centerZ - size;
+            double south = centerZ + size;
+            double east = centerX + size;
+            double west = centerX - size;
             for (Player p : Bukkit.getOnlinePlayers()) {
                 // Particles
                 new BorderParticles().sendBorderParticles(p);
 
-                // Server Transfer
-                double size = Config.getBorderSize();
-                double centerX = Config.getBorderCenterX();
-                double centerZ = Config.getBorderCenterZ();
-                double north = centerZ - size;
-                double south = centerZ + size;
-                double east = centerX + size;
-                double west = centerX - size;
-                Location loc = p.getLocation();
-                if (p.getLocation().getBlockX() >= east) {
-                    if (Config.Servers.getEast() == null || Config.Servers.getEast().isEmpty()) {
-                        loc.setX(east - 2);
-                        TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                        p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"), StringUtils.colorize("&7Try exploring a different direction!"), 1, 40, 1);
+                if (p.getLocation().getBlockZ() <= north - 0.5) {
+                    if (Config.Servers.getNorth() == null || Config.Servers.getNorth().isEmpty()) {
+                        BorderDirection.NORTH.worldBorder(p);
                         continue;
                     }
-                    loc.setX(east + 2);
-                    ConnectionHandler.transferServer(p, Config.Servers.getEast(), loc);;
+                    BorderDirection.NORTH.initTransfer(p);
                 }
-                if (p.getLocation().getBlockX() <= west - .5) {
-                    if (Config.Servers.getWest() == null || Config.Servers.getWest().isEmpty()) {
-                        loc.setX(west + 2);
-                        TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                        p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"), StringUtils.colorize("&7Try exploring a different direction!"), 1, 40, 1);
-                        continue;
-                    }
-                    loc.setX(west - 2);
-                    ConnectionHandler.transferServer(p, Config.Servers.getWest(), loc);;
-                }
+
                 if (p.getLocation().getBlockZ() >= south) {
                     if (Config.Servers.getSouth() == null || Config.Servers.getSouth().isEmpty()) {
-                        loc.setZ(south - 2);
-                        TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                        p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"), StringUtils.colorize("&7Try exploring a different direction!"), 1, 40, 1);
+                        BorderDirection.SOUTH.worldBorder(p);
                         continue;
                     }
-                    loc.setZ(south + 2);
-                    ConnectionHandler.transferServer(p, Config.Servers.getSouth(), loc);;
+                    BorderDirection.SOUTH.initTransfer(p);
                 }
-                if (p.getLocation().getBlockZ() <= north) {
-                    if (Config.Servers.getNorth() == null || Config.Servers.getNorth().isEmpty()) {
-                        loc.setZ(north + 2);
-                        TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                        p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"), StringUtils.colorize("&7Try exploring a different direction!"), 1, 40, 1);
+                if (p.getLocation().getBlockX() >= east) {
+                    if (Config.Servers.getEast() == null || Config.Servers.getEast().isEmpty()) {
+                        BorderDirection.EAST.worldBorder(p);
                         continue;
                     }
-                    loc.setZ(north - 2);
-                    ConnectionHandler.transferServer(p, Config.Servers.getNorth(), loc);;
+                    BorderDirection.EAST.initTransfer(p);
+                }
+
+                if (p.getLocation().getBlockX() <= west - .5) {
+                    if (Config.Servers.getWest() == null || Config.Servers.getWest().isEmpty()) {
+                        BorderDirection.WEST.worldBorder(p);
+                        continue;
+                    }
+                    BorderDirection.WEST.initTransfer(p);
                 }
             }
         }, 5L);
     }
+
+    public enum BorderDirection {
+        NORTH {
+            @Override
+            public void initTransfer(Player p) {
+                Location loc = p.getLocation();
+                loc.setZ((Config.getBorderCenterZ() - Config.getBorderSize()) - 2);
+                ConnectionHandler.transferServer(p, Config.Servers.getNorth(), loc);
+            }
+
+            @Override
+            public void worldBorder(Player p) {
+                Location loc = p.getLocation();
+                loc.setZ((Config.getBorderCenterZ() - Config.getBorderSize()) + 2);
+                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
+                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
+                        StringUtils.colorize("&7Try exploring a different direction!"),
+                        1, 40, 1);
+            }
+        },
+        SOUTH {
+            @Override
+            public void initTransfer(Player p) {
+                Location loc = p.getLocation();
+                loc.setZ((Config.getBorderCenterZ() + Config.getBorderSize()) + 2);
+                ConnectionHandler.transferServer(p, Config.Servers.getSouth(), loc);
+            }
+
+            @Override
+            public void worldBorder(Player p) {
+                Location loc = p.getLocation();
+                loc.setZ((Config.getBorderCenterZ() + Config.getBorderSize()) - 2);
+                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
+                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
+                        StringUtils.colorize("&7Try exploring a different direction!"),
+                        1, 40, 1);
+            }
+        },
+        EAST {
+            @Override
+            public void initTransfer(Player p) {
+                Location loc = p.getLocation();
+                loc.setX((Config.getBorderCenterX() + Config.getBorderSize()) + 2);
+                ConnectionHandler.transferServer(p, Config.Servers.getEast(), loc);
+            }
+
+            @Override
+            public void worldBorder(Player p) {
+                Location loc = p.getLocation();
+                loc.setX((Config.getBorderCenterX() + Config.getBorderSize()) - 2);
+                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
+                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
+                        StringUtils.colorize("&7Try exploring a different direction!"),
+                        1, 40, 1);
+            }
+        },
+        WEST {
+            @Override
+            public void initTransfer(Player p) {
+                Location loc = p.getLocation();
+                loc.setX((Config.getBorderCenterX() - Config.getBorderSize()) - 2);
+                ConnectionHandler.transferServer(p, Config.Servers.getWest(), loc);
+            }
+
+            @Override
+            public void worldBorder(Player p) {
+                Location loc = p.getLocation();
+                loc.setX((Config.getBorderCenterX() - Config.getBorderSize()) + 2);
+                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
+                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
+                        StringUtils.colorize("&7Try exploring a different direction!"),
+                        1, 40, 1);
+            }
+        };
+
+        public abstract void initTransfer(Player p);
+        public abstract void worldBorder(Player p);
+    }
+
 }

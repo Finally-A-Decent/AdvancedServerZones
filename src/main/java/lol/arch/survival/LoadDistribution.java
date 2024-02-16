@@ -3,7 +3,7 @@ package lol.arch.survival;
 import lol.arch.survival.commands.ReloadCommand;
 import lol.arch.survival.config.Config;
 import lol.arch.survival.transfer.BorderHandler;
-import lol.arch.survival.transfer.TransferHandler;
+import lol.arch.survival.transfer.ConnectionHandler;
 import lol.arch.survival.util.TaskManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +18,6 @@ public final class LoadDistribution extends JavaPlugin {
     @Getter private static LoadDistribution instance;
     @Getter private static Logger console;
     @Getter private static JedisPool pool;
-    @Getter private final TransferHandler transferHandler = new TransferHandler();
 
     @Override
     public void onEnable() {
@@ -29,7 +28,7 @@ public final class LoadDistribution extends JavaPlugin {
         reloadConfig();
         Config.reload();
 
-        getServer().getPluginManager().registerEvents(new TransferHandler(), this);
+        getServer().getPluginManager().registerEvents(new ConnectionHandler(), this);
 
         getCommand("zones-reload-config").setExecutor(new ReloadCommand());
 

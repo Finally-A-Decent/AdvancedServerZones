@@ -2,16 +2,37 @@ package lol.arch.survival.transfer;
 
 import com.google.gson.Gson;
 import lol.arch.survival.LoadDistribution;
-import lol.arch.survival.config.Config;
 import lol.arch.survival.util.BungeeMessenger;
+import lol.arch.survival.util.TaskManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import redis.clients.jedis.Jedis;
 
-public class ConnectionHandler {
+
+public class ConnectionHandler implements Listener {
+
+    @EventHandler
+    public void playJoinEvent(PlayerJoinEvent e) {
+        if (ConnectionHandler.getPlayerToLocation(e.getPlayer()) == null) Bukkit.broadcastMessage("womp womp");
+        String locStr = ConnectionHandler.getPlayerToLocation(e.getPlayer());
+        Location loc = ConnectionHandler.fromLocationString(locStr);
+
+        // Only adjust the Y if specified
+        if (ConnectionHandler.checkIfAdjustY(locStr)) {
+            loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 2);
+        }
+
+        // Teleport the player
+        TaskManager.Sync.run(LoadDistribution.getInstance(), ()-> e.getPlayer().teleport(loc));
+
+        ConnectionHandler.clearTeleportKeyFromRedis(ConnectionHandler.getTeleportationToLocationKey(e.getPlayer()));
+    }
 
     /**
      * Send a player to a different server
