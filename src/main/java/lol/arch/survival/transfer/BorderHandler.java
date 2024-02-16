@@ -61,7 +61,6 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Config.getBorderCenterZ() - Config.getBorderSize()) - 2);
                 ConnectionHandler.transferServer(p, Config.Servers.getNorth(), loc);
             }
 
@@ -79,7 +78,6 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Config.getBorderCenterZ() + Config.getBorderSize()) + 2);
                 ConnectionHandler.transferServer(p, Config.Servers.getSouth(), loc);
             }
 
@@ -97,7 +95,6 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Config.getBorderCenterX() + Config.getBorderSize()) + 2);
                 ConnectionHandler.transferServer(p, Config.Servers.getEast(), loc);
             }
 
@@ -115,7 +112,6 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Config.getBorderCenterX() - Config.getBorderSize()) - 2);
                 ConnectionHandler.transferServer(p, Config.Servers.getWest(), loc);
             }
 

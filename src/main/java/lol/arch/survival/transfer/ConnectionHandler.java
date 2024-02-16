@@ -19,7 +19,7 @@ public class ConnectionHandler implements Listener {
 
     @EventHandler
     public void playJoinEvent(PlayerJoinEvent e) {
-        if (ConnectionHandler.getPlayerToLocation(e.getPlayer()) == null) Bukkit.broadcastMessage("womp womp");
+        if (ConnectionHandler.getPlayerToLocation(e.getPlayer()) == null) return;
         String locStr = ConnectionHandler.getPlayerToLocation(e.getPlayer());
         Location loc = ConnectionHandler.fromLocationString(locStr);
 

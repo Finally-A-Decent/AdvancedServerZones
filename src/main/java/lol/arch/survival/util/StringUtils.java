@@ -50,4 +50,21 @@ public class StringUtils {
         }
         return ChatColor.translateAlternateColorCodes('&',str);
     }
+
+    /**
+     * Formats Strings with placeholders
+     * @param message message with placeholders: {index}
+     * @param args things to replace with
+     * @return formatted string
+     */
+    public String formatPlaceholders(String message, Object... args) {
+        for (int i = 0; i < args.length; i++) {
+            if (!message.contains("{" + i + "}")) {
+                continue;
+            }
+
+            message = message.replace("{" + i + "}", String.valueOf(args[i]));
+        }
+        return message;
+    }
 }

@@ -23,6 +23,5 @@ public class BungeeMessenger {
         output.writeUTF("Connect");
         output.writeUTF(server);
         player.sendPluginMessage(LoadDistribution.getInstance(), "BungeeCord", output.toByteArray());
-        Bukkit.broadcastMessage(server);
     }
 }

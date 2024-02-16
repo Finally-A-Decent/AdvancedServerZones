@@ -2,6 +2,7 @@ package lol.arch.survival;
 
 import lol.arch.survival.commands.ReloadCommand;
 import lol.arch.survival.config.Config;
+import lol.arch.survival.sync.ChatSync;
 import lol.arch.survival.transfer.BorderHandler;
 import lol.arch.survival.transfer.ConnectionHandler;
 import lol.arch.survival.util.TaskManager;
@@ -29,6 +30,7 @@ public final class LoadDistribution extends JavaPlugin {
         Config.reload();
 
         getServer().getPluginManager().registerEvents(new ConnectionHandler(), this);
+        getServer().getPluginManager().registerEvents(new ChatSync(), this);
 
         getCommand("zones-reload-config").setExecutor(new ReloadCommand());
 
@@ -47,6 +49,8 @@ public final class LoadDistribution extends JavaPlugin {
             try (Jedis jedis = LoadDistribution.getPool().getResource()) {
                 jedis.auth(Config.Redis.getPassword());
                 jedis.ping();
+                jedis.subscribe(new ChatSync(), "survival.chat-sync");
+
             } catch (JedisConnectionException | JedisAccessControlException e) {
                 getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
                 getConsole().severe("Now stopping the server!");
@@ -56,12 +60,12 @@ public final class LoadDistribution extends JavaPlugin {
             getConsole().info("Redis Connected Successfully!");
         });
         new BorderHandler();
-
         getConsole().info("Server-Core Loaded");
     }
 
     @Override
     public void onDisable() {
+        pool.close();
         getConsole().info("Server-Core Disabled");
     }
 }
