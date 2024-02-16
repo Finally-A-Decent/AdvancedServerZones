@@ -17,27 +17,11 @@ import redis.clients.jedis.Jedis;
 
 public class ConnectionHandler implements Listener {
 
-    @EventHandler
-    public void playJoinEvent(PlayerJoinEvent e) {
-        if (ConnectionHandler.getPlayerToLocation(e.getPlayer()) == null) return;
-        String locStr = ConnectionHandler.getPlayerToLocation(e.getPlayer());
-        Location loc = ConnectionHandler.fromLocationString(locStr);
-
-        // Only adjust the Y if specified
-        if (ConnectionHandler.checkIfAdjustY(locStr)) {
-            loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 2);
-        }
-
-        // Teleport the player
-        TaskManager.Sync.run(LoadDistribution.getInstance(), ()-> e.getPlayer().teleport(loc));
-
-        ConnectionHandler.clearTeleportKeyFromRedis(ConnectionHandler.getTeleportationToLocationKey(e.getPlayer()));
-    }
-
     /**
      * Send a player to a different server
-     * @param player player to teleport
-     * @param server server to teleport to
+     *
+     * @param player   player to teleport
+     * @param server   server to teleport to
      * @param location location
      */
     public static void transferServer(@NotNull Player player, @NotNull String server, Location location) {
@@ -109,5 +93,22 @@ public class ConnectionHandler implements Listener {
             jedis.auth(LoadDistribution.getInstance().getConfig().getString("redis.password"));
             jedis.del(key);
         }
+    }
+
+    @EventHandler
+    public void playJoinEvent(PlayerJoinEvent e) {
+        if (ConnectionHandler.getPlayerToLocation(e.getPlayer()) == null) return;
+        String locStr = ConnectionHandler.getPlayerToLocation(e.getPlayer());
+        Location loc = ConnectionHandler.fromLocationString(locStr);
+
+        // Only adjust the Y if specified
+        if (ConnectionHandler.checkIfAdjustY(locStr)) {
+            loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 2);
+        }
+
+        // Teleport the player
+        TaskManager.Sync.run(LoadDistribution.getInstance(), () -> e.getPlayer().teleport(loc));
+
+        ConnectionHandler.clearTeleportKeyFromRedis(ConnectionHandler.getTeleportationToLocationKey(e.getPlayer()));
     }
 }

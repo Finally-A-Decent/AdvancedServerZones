@@ -5,6 +5,7 @@ package lol.arch.survival.util;
  */
 public class Cuboid {
     private final int minX, minY, minZ, maxX, maxY, maxZ;
+
     public Cuboid(int x1, int y1, int z1, int x2, int y2, int z2) {
         this.minX = Math.min(x1, x2);
         this.minY = Math.min(y1, y2);
@@ -13,6 +14,7 @@ public class Cuboid {
         this.maxY = Math.max(y1, y2);
         this.maxZ = Math.max(z1, z2);
     }
+
     public int[][] getAllPoints() {
         int[][] points = new int[getArea()][];
         int index = 0;
@@ -25,6 +27,7 @@ public class Cuboid {
         }
         return points;
     }
+
     public int getArea() {
         int dx = maxX - minX;
         int dy = maxY - minY;

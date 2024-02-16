@@ -16,6 +16,23 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BorderParticles {
 
+    @NotNull
+    private static Color getColor(int[] point) {
+        Color color;
+        if (Config.isRainbowParticle()) {
+            float hue = Math.abs(point[1]) / 100f;
+            hue -= (float) Math.floor(hue);
+            int rgb = java.awt.Color.HSBtoRGB(hue * Config.getRainbowParticleHarshness(), 1f, 1f);
+            int r = (rgb >>> 16) & 0xFF;
+            int g = (rgb >>> 8) & 0xFF;
+            int b = rgb & 0xFF;
+            color = Color.fromRGB(r, g, b);
+        } else {
+            color = Color.fromRGB(Config.getParticleColor().get(0), Config.getParticleColor().get(1), Config.getParticleColor().get(2));
+        }
+        return color;
+    }
+
     public void sendBorderParticles(Player p) {
         Vector from = p.getLocation().toVector();
         for (BorderDirection direction : BorderDirection.values()) {
@@ -36,7 +53,8 @@ public class BorderParticles {
         NORTH {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize() - from.getBlockZ()) > 16) return null;
+                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize() - from.getBlockZ()) > 16)
+                    return null;
 
                 return new Cuboid(
                         Math.max(from.getBlockX() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize()),
@@ -51,7 +69,8 @@ public class BorderParticles {
         EAST {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize() - from.getBlockX()) > 16) return null;
+                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize() - from.getBlockX()) > 16)
+                    return null;
 
                 return new Cuboid(
                         new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize(),
@@ -66,7 +85,8 @@ public class BorderParticles {
         SOUTH {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize() - from.getBlockZ()) > 16) return null;
+                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize() - from.getBlockZ()) > 16)
+                    return null;
 
                 return new Cuboid(
                         Math.max(from.getBlockX() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize()),
@@ -81,7 +101,8 @@ public class BorderParticles {
         WEST {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize() - from.getBlockX()) > 16) return null;
+                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize() - from.getBlockX()) > 16)
+                    return null;
 
                 return new Cuboid(
                         new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize(),
@@ -95,22 +116,5 @@ public class BorderParticles {
         };
 
         public abstract Cuboid getVisibleBorder(Vector from);
-    }
-
-    @NotNull
-    private static Color getColor(int[] point) {
-        Color color;
-        if (Config.isRainbowParticle()) {
-            float hue = Math.abs(point[1]) / 100f;
-            hue -= (float) Math.floor(hue);
-            int rgb = java.awt.Color.HSBtoRGB(hue * Config.getRainbowParticleHarshness(), 1f, 1f);
-            int r = (rgb >>> 16) & 0xFF;
-            int g = (rgb >>>  8) & 0xFF;
-            int b = rgb & 0xFF;
-            color = Color.fromRGB(r, g, b);
-        } else {
-            color = Color.fromRGB(Config.getParticleColor().get(0), Config.getParticleColor().get(1), Config.getParticleColor().get(2));
-        }
-        return color;
     }
 }

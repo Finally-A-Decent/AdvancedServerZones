@@ -10,12 +10,14 @@ import java.util.regex.Pattern;
 
 /**
  * Basic string utils
+ *
  * @author Preva1l
  */
 @UtilityClass
 public class StringUtils {
     /**
      * Colorize a list. (Useful for lore)
+     *
      * @param list List typeof String
      * @return Colorized List typeof String
      */
@@ -29,6 +31,7 @@ public class StringUtils {
 
     /**
      * Colorize  a string.
+     *
      * @param str String with color codes or hex codes.
      * @return Colorized String
      */
@@ -37,24 +40,25 @@ public class StringUtils {
         Pattern unicode = Pattern.compile("\\\\u\\+[a-fA-F0-9]{4}");
         Matcher match = unicode.matcher(str);
         while (match.find()) {
-            String code = str.substring(match.start(),match.end());
-            str = str.replace(code,Character.toString((char) Integer.parseInt(code.replace("\\u+",""),16)));
+            String code = str.substring(match.start(), match.end());
+            str = str.replace(code, Character.toString((char) Integer.parseInt(code.replace("\\u+", ""), 16)));
             match = unicode.matcher(str);
         }
         Pattern pattern = Pattern.compile("&#[a-fA-F0-9]{6}");
         match = pattern.matcher(str);
         while (match.find()) {
-            String color = str.substring(match.start(),match.end());
-            str = str.replace(color, ChatColor.of(color.replace("&","")) + "");
+            String color = str.substring(match.start(), match.end());
+            str = str.replace(color, ChatColor.of(color.replace("&", "")) + "");
             match = pattern.matcher(str);
         }
-        return ChatColor.translateAlternateColorCodes('&',str);
+        return ChatColor.translateAlternateColorCodes('&', str);
     }
 
     /**
      * Formats Strings with placeholders
+     *
      * @param message message with placeholders: {index}
-     * @param args things to replace with
+     * @param args    things to replace with
      * @return formatted string
      */
     public String formatPlaceholders(String message, Object... args) {

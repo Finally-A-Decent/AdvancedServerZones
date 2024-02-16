@@ -44,6 +44,7 @@ public class ChatSync extends JedisPubSub implements Listener {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void onSubscribe(String channel, int subscribedTo) {
         LoadDistribution.getConsole().info("PubSub subscribed to: " + channel);

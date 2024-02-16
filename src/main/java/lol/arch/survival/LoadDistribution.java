@@ -3,6 +3,7 @@ package lol.arch.survival;
 import lol.arch.survival.commands.ReloadCommand;
 import lol.arch.survival.config.Config;
 import lol.arch.survival.sync.ChatSync;
+import lol.arch.survival.sync.PreventInteractionsNearBorder;
 import lol.arch.survival.transfer.BorderHandler;
 import lol.arch.survival.transfer.ConnectionHandler;
 import lol.arch.survival.util.TaskManager;
@@ -31,6 +32,7 @@ public final class LoadDistribution extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new ConnectionHandler(), this);
         getServer().getPluginManager().registerEvents(new ChatSync(), this);
+        getServer().getPluginManager().registerEvents(new PreventInteractionsNearBorder(), this);
 
         getCommand("zones-reload-config").setExecutor(new ReloadCommand());
 
