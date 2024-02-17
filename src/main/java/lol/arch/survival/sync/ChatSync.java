@@ -22,7 +22,7 @@ public class ChatSync extends JedisPubSub implements Listener {
         e.setCancelled(true);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uuid", e.getPlayer().getUniqueId().toString());
-        jsonObject.put("message", e.getFormat().replace("%1\\$s", e.getPlayer().getName()).replace("%2\\$s", e.getMessage()));
+        jsonObject.put("message", e.getFormat().replace("%1$s", e.getPlayer().getName()).replace("%2$s", e.getMessage()));
 
         try (Jedis jedis = LoadDistribution.getPool().getResource()) {
             jedis.auth(Config.Redis.getPassword());

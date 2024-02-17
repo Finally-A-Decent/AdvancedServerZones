@@ -24,6 +24,17 @@ public class Config {
         particleColor = LoadDistribution.getInstance().getConfig().getIntegerList("border.particle-color");
         Servers.reload();
         Redis.reload();
+        Messages.reload();
+    }
+
+    public static class Messages {
+        @Getter private static String noTouchy;
+        @Getter private static String reloaded;
+
+        public static void reload() {
+            noTouchy = LoadDistribution.getInstance().getConfig().getString("messages.cannot-interact-here");
+            reloaded = LoadDistribution.getInstance().getConfig().getString("messages.reloaded");
+        }
     }
 
     public static class Servers {

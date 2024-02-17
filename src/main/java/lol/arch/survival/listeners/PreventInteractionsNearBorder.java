@@ -1,4 +1,4 @@
-package lol.arch.survival.sync;
+package lol.arch.survival.listeners;
 
 import lol.arch.survival.config.Config;
 import lol.arch.survival.util.StringUtils;
@@ -16,22 +16,22 @@ public class PreventInteractionsNearBorder implements Listener {
         Vector from = loc.toVector();
 
         if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize() - from.getBlockZ()) < 48) {
-            p.sendMessage(StringUtils.colorize("&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"));
+            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
             return true;
         }
 
         if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize() - from.getBlockX()) < 48) {
-            p.sendMessage(StringUtils.colorize("&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"));
+            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
             return true;
         }
 
         if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize() - from.getBlockZ()) < 48) {
-            p.sendMessage(StringUtils.colorize("&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"));
+            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
             return true;
         }
 
         if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize() - from.getBlockX()) < 48) {
-            p.sendMessage(StringUtils.colorize("&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"));
+            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
             return true;
         }
 

@@ -13,7 +13,7 @@ public class ReloadCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         LoadDistribution.getInstance().reloadConfig();
         Config.reload();
-        commandSender.sendMessage(StringUtils.colorize("&aConfig reloaded!"));
+        commandSender.sendMessage(StringUtils.colorize(Config.Messages.getReloaded()));
         return true;
     }
 }

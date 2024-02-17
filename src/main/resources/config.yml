@@ -1,3 +1,6 @@
+messages:
+  cannot-interact-here: "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"
+
 border:
   size: 20
   centerX: 0 # Negative is West, Positive is East

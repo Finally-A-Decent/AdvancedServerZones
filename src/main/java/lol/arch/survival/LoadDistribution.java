@@ -3,7 +3,7 @@ package lol.arch.survival;
 import lol.arch.survival.commands.ReloadCommand;
 import lol.arch.survival.config.Config;
 import lol.arch.survival.sync.ChatSync;
-import lol.arch.survival.sync.PreventInteractionsNearBorder;
+import lol.arch.survival.listeners.PreventInteractionsNearBorder;
 import lol.arch.survival.transfer.BorderHandler;
 import lol.arch.survival.transfer.ConnectionHandler;
 import lol.arch.survival.util.TaskManager;
@@ -52,7 +52,6 @@ public final class LoadDistribution extends JavaPlugin {
                 jedis.auth(Config.Redis.getPassword());
                 jedis.ping();
                 jedis.subscribe(new ChatSync(), "survival.chat-sync");
-
             } catch (JedisConnectionException | JedisAccessControlException e) {
                 getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
                 getConsole().severe("Now stopping the server!");
