@@ -21,10 +21,13 @@ repositories {
 dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
 
-    implementation 'redis.clients:jedis:5.1.0'
-    implementation 'org.apache.commons:commons-pool2:2.12.0'
+    compileOnly 'redis.clients:jedis:5.1.0'
+    compileOnly 'org.apache.commons:commons-pool2:2.12.0'
 
-    implementation 'org.projectlombok:lombok:1.18.28'
+
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 }
 
@@ -53,4 +56,8 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+shadowJar {
+    minimize()
 }

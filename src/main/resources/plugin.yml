@@ -1,9 +1,13 @@
-name: LoadDistribution
+name: AdvancedServerZones
 description: The plugin that handles zone transfers and borders
 version: '${version}'
 main: lol.arch.survival.LoadDistribution
 api-version: '1.16'
-authors: [Preva1l, elijuh]
+authors: [Preva1l]
+
+libraries:
+  - 'redis.clients:jedis:5.1.0'
+  - 'org.apache.commons:commons-pool2:2.12.0'
 
 commands:
   zones-reload-config:

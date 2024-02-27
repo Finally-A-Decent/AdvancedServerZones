@@ -8,6 +8,7 @@ import lol.arch.survival.transfer.BorderHandler;
 import lol.arch.survival.transfer.ConnectionHandler;
 import lol.arch.survival.util.TaskManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -20,6 +21,7 @@ public final class LoadDistribution extends JavaPlugin {
     @Getter private static LoadDistribution instance;
     @Getter private static Logger console;
     @Getter private static JedisPool pool;
+    private ChatSync chatSync;
 
     @Override
     public void onEnable() {
@@ -48,10 +50,11 @@ public final class LoadDistribution extends JavaPlugin {
             getConsole().info("Connecting to Redis Pool...");
             pool = new JedisPool(Config.Redis.getHost(), Config.Redis.getPort());
             pool.setMaxTotal(2);
+            chatSync = new ChatSync();
             try (Jedis jedis = LoadDistribution.getPool().getResource()) {
                 jedis.auth(Config.Redis.getPassword());
                 jedis.ping();
-                jedis.subscribe(new ChatSync(), "survival.chat-sync");
+                jedis.subscribe(chatSync, "survival.chat-sync");
             } catch (JedisConnectionException | JedisAccessControlException e) {
                 getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
                 getConsole().severe("Now stopping the server!");
@@ -66,7 +69,8 @@ public final class LoadDistribution extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        pool.close();
+        chatSync.unsubscribe("survival.chat-sync");
+        Bukkit.getScheduler().cancelTasks(this);
         getConsole().info("Server-Core Disabled");
     }
 }

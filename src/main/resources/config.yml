@@ -1,5 +1,8 @@
 messages:
   cannot-interact-here: "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"
+  world-border:
+    title: ""
+    subtitle: ""
 
 border:
   size: 20
@@ -9,7 +12,7 @@ border:
   particle-rainbow: false # Override particle color
   particle-rainbow-harshness: 10 # 1 = Lowest, 10 = Highest, 0 = Solid red
 
-servers: # Must match bungee config.yml
+servers: # Must match bungee config.yml (or velocity.toml)
   north: "survival-zone-01"
   south: "survival-zone-06"
   east: "survival-spawn-01"
