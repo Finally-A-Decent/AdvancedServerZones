@@ -69,8 +69,8 @@ public class BorderHandler {
                 Location loc = p.getLocation();
                 loc.setZ((Config.getBorderCenterZ() - Config.getBorderSize()) + 2);
                 TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
-                        StringUtils.colorize("&7Try exploring a different direction!"),
+                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
+                        StringUtils.colorize(Config.Messages.getSubtitle()),
                         1, 40, 1);
             }
         },
@@ -86,8 +86,8 @@ public class BorderHandler {
                 Location loc = p.getLocation();
                 loc.setZ((Config.getBorderCenterZ() + Config.getBorderSize()) - 2);
                 TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
-                        StringUtils.colorize("&7Try exploring a different direction!"),
+                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
+                        StringUtils.colorize(Config.Messages.getSubtitle()),
                         1, 40, 1);
             }
         },
@@ -103,8 +103,8 @@ public class BorderHandler {
                 Location loc = p.getLocation();
                 loc.setX((Config.getBorderCenterX() + Config.getBorderSize()) - 2);
                 TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
-                        StringUtils.colorize("&7Try exploring a different direction!"),
+                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
+                        StringUtils.colorize(Config.Messages.getSubtitle()),
                         1, 40, 1);
             }
         },
@@ -120,8 +120,8 @@ public class BorderHandler {
                 Location loc = p.getLocation();
                 loc.setX((Config.getBorderCenterX() - Config.getBorderSize()) + 2);
                 TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize("&cYou have reached the world border!"),
-                        StringUtils.colorize("&7Try exploring a different direction!"),
+                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
+                        StringUtils.colorize(Config.Messages.getSubtitle()),
                         1, 40, 1);
             }
         };

@@ -5,6 +5,7 @@ import lol.arch.survival.util.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -38,17 +39,17 @@ public class PreventInteractionsNearBorder implements Listener {
         return false;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void blockBreakListener(BlockBreakEvent e) {
         e.setCancelled(checkIfShouldPrevent(e.getPlayer(), e.getBlock().getLocation()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void blockPlaceListener(BlockPlaceEvent e) {
         e.setCancelled(checkIfShouldPrevent(e.getPlayer(), e.getBlock().getLocation()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void blockInteractListener(BlockBreakEvent e) {
         e.setCancelled(checkIfShouldPrevent(e.getPlayer(), e.getBlock().getLocation()));
     }

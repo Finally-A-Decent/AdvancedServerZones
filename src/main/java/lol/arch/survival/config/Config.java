@@ -30,10 +30,14 @@ public class Config {
     public static class Messages {
         @Getter private static String noTouchy;
         @Getter private static String reloaded;
+        @Getter private static String title;
+        @Getter private static String subtitle;
 
         public static void reload() {
             noTouchy = LoadDistribution.getInstance().getConfig().getString("messages.cannot-interact-here");
             reloaded = LoadDistribution.getInstance().getConfig().getString("messages.reloaded");
+            title = LoadDistribution.getInstance().getConfig().getString("messages.world-border.title");
+            subtitle = LoadDistribution.getInstance().getConfig().getString("messages.world-border.subtitle");
         }
     }
 

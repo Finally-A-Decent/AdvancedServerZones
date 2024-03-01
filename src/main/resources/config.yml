@@ -1,8 +1,9 @@
 messages:
+  reloaded: "&aPlugin Reloaded"
   cannot-interact-here: "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"
   world-border:
-    title: ""
-    subtitle: ""
+    title: "&cYou have reached the world border!"
+    subtitle: "&7Try exploring a different direction!"
 
 border:
   size: 20

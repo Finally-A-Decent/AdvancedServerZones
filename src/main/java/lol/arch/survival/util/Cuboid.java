@@ -1,8 +1,5 @@
 package lol.arch.survival.util;
 
-/**
- * @author elijuh
- */
 public class Cuboid {
     private final int minX, minY, minZ, maxX, maxY, maxZ;
 
