@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-@Getter
 @SuppressWarnings("unused")
 public class ChatSyncSendEvent extends Event {
-    private static final HandlerList HANDLERS = new HandlerList();
-    private final UUID sender;
-    private final String message;
+    @Getter private static final HandlerList handlerList = new HandlerList();
+    @Getter private final UUID sender;
+    @Getter private final String message;
 
     public ChatSyncSendEvent(UUID sender, String message) {
+        super(true);
         this.sender = sender;
         this.message = message;
         Bukkit.getServer().getPluginManager().callEvent(this);
@@ -23,6 +23,6 @@ public class ChatSyncSendEvent extends Event {
 
     @Override
     public @NotNull HandlerList getHandlers() {
-        return HANDLERS;
+        return handlerList;
     }
 }

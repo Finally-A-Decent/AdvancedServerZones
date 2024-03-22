@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
-
-@SuppressWarnings("ConstantConditions")
 @Getter
 @AllArgsConstructor
 public enum Config {
@@ -27,7 +25,7 @@ public enum Config {
      */
     CHAT_SYNC("chatsync.enabled", true),
     CHAT_SYNC_MODE("chatsync.mode", "VANILLA"),
-    CHAT_SYNC_CUSTOM("chatsync.custom", "<white>[<#FF0000>{server}<white>] <reset>{prefix} <white>{player_name} <dark_gray>>> <gray>{message}"),
+    CHAT_SYNC_CUSTOM("chatsync.custom", "<white>[<#FF0000>{server}<white>] <reset>{prefix}<reset> <white>{player_name} <dark_gray>>> <gray>{message}"),
 
     /*
      * Redis
@@ -57,7 +55,7 @@ public enum Config {
     }
     public List<Integer> toIntegerList() {
         List<Integer> list = AdvancedServerZones.getInstance().getConfigFile().getConfiguration().getIntegerList(path);
-        if (list == null || list.isEmpty() || list.get(0) == null) {
+        if (list.isEmpty() || list.get(0) == null) {
             return ImmutableList.of();
         }
         return list;

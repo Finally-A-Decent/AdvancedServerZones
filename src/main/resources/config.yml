@@ -15,7 +15,7 @@ chatsync:
   # PAPI Support
   # MiniMessage format
   # Built in placeholders (Requires Vault and Compatible Permissions Plugin): {prefix}, {player_name}, {suffix}, {server}, {message}
-  custom: "<white>[<#FF0000>{server}<white>] <reset>{prefix} <white>{player_name} <dark_gray>>> <gray>{message}"
+  custom: "<white>[<#FF0000>{server}<white>] <reset>{prefix}<reset> <white>{player_name} <dark_gray>>> <gray>{message}"
 
 redis:
   host: "127.0.0.1"

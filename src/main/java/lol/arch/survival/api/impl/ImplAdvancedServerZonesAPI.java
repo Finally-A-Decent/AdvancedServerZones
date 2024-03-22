@@ -1,13 +1,19 @@
 package lol.arch.survival.api.impl;
 
+import lol.arch.survival.AdvancedServerZones;
 import lol.arch.survival.api.AdvancedServerZonesAPI;
 import lol.arch.survival.config.Config;
 import lol.arch.survival.config.Servers;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Blocking;
+import org.json.JSONObject;
+import redis.clients.jedis.Jedis;
+
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class ImplAdvancedServerZonesAPI implements AdvancedServerZonesAPI {
@@ -43,5 +49,20 @@ public class ImplAdvancedServerZonesAPI implements AdvancedServerZonesAPI {
             return true;
         }
         return Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 48;
+    }
+
+    @Override
+    public void sendChatSyncMessage(UUID sender, String message) {
+        if (!Config.CHAT_SYNC.toBoolean()) {
+            return;
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uuid", sender.toString());
+        jsonObject.put("message", message);
+
+        try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
+            jedis.auth(Config.REDIS_PASSWORD.toString());
+            jedis.publish("asz.chat-sync", jsonObject.toString());
+        }
     }
 }
