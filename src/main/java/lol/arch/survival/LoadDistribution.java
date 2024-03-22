@@ -1,5 +1,7 @@
 package lol.arch.survival;
 
+import lol.arch.survival.api.RegionsAPI;
+import lol.arch.survival.api.impl.ImplRegionAPI;
 import lol.arch.survival.commands.ReloadCommand;
 import lol.arch.survival.config.Config;
 import lol.arch.survival.sync.ChatSync;
@@ -19,9 +21,12 @@ import java.util.logging.Logger;
 
 public final class LoadDistribution extends JavaPlugin {
     @Getter private static LoadDistribution instance;
-    @Getter private static Logger console;
-    @Getter private static JedisPool pool;
+
+    @Getter private Logger console;
+    @Getter private JedisPool pool;
     private ChatSync chatSync;
+
+    @Getter private static RegionsAPI API;
 
     @Override
     public void onEnable() {
@@ -51,7 +56,7 @@ public final class LoadDistribution extends JavaPlugin {
             pool = new JedisPool(Config.Redis.getHost(), Config.Redis.getPort());
             pool.setMaxTotal(2);
             chatSync = new ChatSync();
-            try (Jedis jedis = LoadDistribution.getPool().getResource()) {
+            try (Jedis jedis = LoadDistribution.getInstance().getPool().getResource()) {
                 jedis.auth(Config.Redis.getPassword());
                 jedis.ping();
                 jedis.subscribe(chatSync, "survival.chat-sync");
@@ -64,6 +69,7 @@ public final class LoadDistribution extends JavaPlugin {
             getConsole().info("Redis Connected Successfully!");
         });
         new BorderHandler();
+        API = new ImplRegionAPI();
         getConsole().info("Server-Core Loaded");
     }
 

@@ -26,7 +26,7 @@ public class ConnectionHandler implements Listener {
      */
     public static void transferServer(@NotNull Player player, @NotNull String server, Location location) {
         // Adding location to redis
-        try (Jedis jedis = LoadDistribution.getPool().getResource()) {
+        try (Jedis jedis = LoadDistribution.getInstance().getPool().getResource()) {
             jedis.auth(LoadDistribution.getInstance().getConfig().getString("redis.password"));
             jedis.set(getTeleportationToLocationKey(player), locationToString(location, player));
         }
@@ -81,7 +81,7 @@ public class ConnectionHandler implements Listener {
 
     public static String getPlayerToLocation(Player player) {
         String toLocation;
-        try (Jedis jedis = LoadDistribution.getPool().getResource()) {
+        try (Jedis jedis = LoadDistribution.getInstance().getPool().getResource()) {
             jedis.auth(LoadDistribution.getInstance().getConfig().getString("redis.password"));
             toLocation = jedis.get(getTeleportationToLocationKey(player));
         }
@@ -89,7 +89,7 @@ public class ConnectionHandler implements Listener {
     }
 
     public static void clearTeleportKeyFromRedis(String key) {
-        try (Jedis jedis = LoadDistribution.getPool().getResource()) {
+        try (Jedis jedis = LoadDistribution.getInstance().getPool().getResource()) {
             jedis.auth(LoadDistribution.getInstance().getConfig().getString("redis.password"));
             jedis.del(key);
         }

@@ -17,14 +17,14 @@ import redis.clients.jedis.JedisPubSub;
 import java.util.UUID;
 
 public class ChatSync extends JedisPubSub implements Listener {
-    @EventHandler()
+    @EventHandler
     private void chatMessageListener(AsyncPlayerChatEvent e) {
         e.setCancelled(true);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uuid", e.getPlayer().getUniqueId().toString());
         jsonObject.put("message", e.getFormat().replace("%1$s", e.getPlayer().getName()).replace("%2$s", e.getMessage()));
 
-        try (Jedis jedis = LoadDistribution.getPool().getResource()) {
+        try (Jedis jedis = LoadDistribution.getInstance().getPool().getResource()) {
             jedis.auth(Config.Redis.getPassword());
             jedis.publish("survival.chat-sync", jsonObject.toJSONString());
         }
@@ -47,6 +47,6 @@ public class ChatSync extends JedisPubSub implements Listener {
 
     @Override
     public void onSubscribe(String channel, int subscribedTo) {
-        LoadDistribution.getConsole().info("PubSub subscribed to: " + channel);
+        LoadDistribution.getInstance().getConsole().info("PubSub subscribed to: " + channel);
     }
 }

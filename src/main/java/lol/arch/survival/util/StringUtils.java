@@ -3,8 +3,6 @@ package lol.arch.survival.util;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,20 +13,6 @@ import java.util.regex.Pattern;
  */
 @UtilityClass
 public class StringUtils {
-    /**
-     * Colorize a list. (Useful for lore)
-     *
-     * @param list List typeof String
-     * @return Colorized List typeof String
-     */
-    public List<String> colorizeList(List<String> list) {
-        if (list == null) return null;
-        if (list.isEmpty()) return null;
-        List<String> ret = new ArrayList<>();
-        for (String line : list) ret.add(colorize(line));
-        return ret;
-    }
-
     /**
      * Colorize  a string.
      *
@@ -52,23 +36,5 @@ public class StringUtils {
             match = pattern.matcher(str);
         }
         return ChatColor.translateAlternateColorCodes('&', str);
-    }
-
-    /**
-     * Formats Strings with placeholders
-     *
-     * @param message message with placeholders: {index}
-     * @param args    things to replace with
-     * @return formatted string
-     */
-    public String formatPlaceholders(String message, Object... args) {
-        for (int i = 0; i < args.length; i++) {
-            if (!message.contains("{" + i + "}")) {
-                continue;
-            }
-
-            message = message.replace("{" + i + "}", String.valueOf(args[i]));
-        }
-        return message;
     }
 }
