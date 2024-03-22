@@ -2,7 +2,7 @@ package lol.arch.survival.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import lol.arch.survival.LoadDistribution;
+import lol.arch.survival.AdvancedServerZones;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 
@@ -23,6 +23,6 @@ public class BungeeMessenger {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Connect");
         output.writeUTF(server);
-        player.sendPluginMessage(LoadDistribution.getInstance(), "BungeeCord", output.toByteArray());
+        player.sendPluginMessage(AdvancedServerZones.getInstance(), "BungeeCord", output.toByteArray());
     }
 }

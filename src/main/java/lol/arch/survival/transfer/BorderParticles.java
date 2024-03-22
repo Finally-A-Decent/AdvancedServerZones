@@ -2,6 +2,7 @@ package lol.arch.survival.transfer;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import lol.arch.survival.config.Config;
+import lol.arch.survival.config.Servers;
 import lol.arch.survival.util.Cuboid;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -19,16 +20,18 @@ public class BorderParticles {
     @NotNull
     private static Color getColor(int[] point) {
         Color color;
-        if (Config.isRainbowParticle()) {
+        if (Config.RAINBOW_PARTICLES.toBoolean()) {
             float hue = Math.abs(point[1]) / 100f;
             hue -= (float) Math.floor(hue);
-            int rgb = java.awt.Color.HSBtoRGB(hue * Config.getRainbowParticleHarshness(), 1f, 1f);
+            int rgb = java.awt.Color.HSBtoRGB(hue * Config.RAINBOW_HARSHNESS.toInteger(), 1f, 1f);
             int r = (rgb >>> 16) & 0xFF;
             int g = (rgb >>> 8) & 0xFF;
             int b = rgb & 0xFF;
             color = Color.fromRGB(r, g, b);
         } else {
-            color = Color.fromRGB(Config.getParticleColor().get(0), Config.getParticleColor().get(1), Config.getParticleColor().get(2));
+            color = Color.fromRGB(Config.PARTICLE_COLOR.toIntegerList().get(0),
+                    Config.PARTICLE_COLOR.toIntegerList().get(1),
+                    Config.PARTICLE_COLOR.toIntegerList().get(2));
         }
         return color;
     }
@@ -53,64 +56,64 @@ public class BorderParticles {
         NORTH {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize() - from.getBlockZ()) > 16)
+                if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger() - from.getBlockZ()) > 16)
                     return null;
 
                 return new Cuboid(
-                        Math.max(from.getBlockX() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize()),
+                        Math.max(from.getBlockX() - 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger()),
                         from.getBlockY() - 1,
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize(),
-                        Math.min(from.getBlockX() + 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize()),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger(),
+                        Math.min(from.getBlockX() + 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger()),
                         from.getBlockY() + 5,
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize()
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger()
                 );
             }
         },
         EAST {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize() - from.getBlockX()) > 16)
+                if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger() - from.getBlockX()) > 16)
                     return null;
 
                 return new Cuboid(
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize(),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger(),
                         from.getBlockY() - 1,
-                        Math.max(from.getBlockZ() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize()),
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize(),
+                        Math.max(from.getBlockZ() - 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger()),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger(),
                         from.getBlockY() + 5,
-                        Math.min(from.getBlockZ() + 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize())
+                        Math.min(from.getBlockZ() + 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger())
                 );
             }
         },
         SOUTH {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize() - from.getBlockZ()) > 16)
+                if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger() - from.getBlockZ()) > 16)
                     return null;
 
                 return new Cuboid(
-                        Math.max(from.getBlockX() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize()),
+                        Math.max(from.getBlockX() - 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger()),
                         from.getBlockY() - 1,
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize(),
-                        Math.min(from.getBlockX() + 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize()),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger(),
+                        Math.min(from.getBlockX() + 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger()),
                         from.getBlockY() + 5,
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize()
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger()
                 );
             }
         },
         WEST {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
-                if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize() - from.getBlockX()) > 16)
+                if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) > 16)
                     return null;
 
                 return new Cuboid(
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize(),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger(),
                         from.getBlockY() - 1,
-                        Math.max(from.getBlockZ() - 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize()),
-                        new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize(),
+                        Math.max(from.getBlockZ() - 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger()),
+                        new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger(),
                         from.getBlockY() + 5,
-                        Math.min(from.getBlockZ() + 10, new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize())
+                        Math.min(from.getBlockZ() + 10, new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger())
                 );
             }
         };

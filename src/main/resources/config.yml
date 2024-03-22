@@ -1,23 +1,21 @@
-messages:
-  reloaded: "&aPlugin Reloaded"
-  cannot-interact-here: "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"
-  world-border:
-    title: "&cYou have reached the world border!"
-    subtitle: "&7Try exploring a different direction!"
-
 border:
   size: 20
-  centerX: 0 # Negative is West, Positive is East
-  centerZ: 0 # Negative is North, Positive is South
-  particle-color: [184, 50, 172] # RGB Value, Default is magenta
-  particle-rainbow: false # Override particle color
-  particle-rainbow-harshness: 10 # 1 = Lowest, 10 = Highest, 0 = Solid red
+  particle:
+    color: [184, 50, 172] # RGB Value, Default is magenta
+    rainbow: false # Override particle color
+    rainbow-harshness: 5 # 1 = Lowest, 10 = Highest, 0 = Solid red
 
-servers: # Must match bungee config.yml (or velocity.toml)
-  north: "survival-zone-01"
-  south: "survival-zone-06"
-  east: "survival-spawn-01"
-  west: "" # Leave blank for it to be the world border
+chatsync:
+  enabled: true
+  # Modes:
+  # VANILLA: Uses vanilla chat format, if you write your format to use this it will work.
+  # CUSTOM: Define chat formatting via this plugin, PAPI support
+  # API: Handle chat formatting via the API, No chat messages will be sent if you don't handle it! (Open Ticket For "Docs")
+  mode: VANILLA
+  # PAPI Support
+  # MiniMessage format
+  # Built in placeholders (Requires Vault and Compatible Permissions Plugin): {prefix}, {player_name}, {suffix}, {server}, {message}
+  custom: "<white>[<#FF0000>{server}<white>] <reset>{prefix} <white>{player_name} <dark_gray>>> <gray>{message}"
 
 redis:
   host: "127.0.0.1"

@@ -1,29 +1,33 @@
 package lol.arch.survival.transfer;
 
-import lol.arch.survival.LoadDistribution;
+import lol.arch.survival.AdvancedServerZones;
 import lol.arch.survival.config.Config;
-import lol.arch.survival.util.StringUtils;
+import lol.arch.survival.config.Lang;
+import lol.arch.survival.config.Servers;
 import lol.arch.survival.util.TaskManager;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
 public class BorderHandler {
     public BorderHandler() {
-        TaskManager.Async.runTask(LoadDistribution.getInstance(), () -> {
-            double size = Config.getBorderSize();
-            double centerX = Config.getBorderCenterX();
-            double centerZ = Config.getBorderCenterZ();
+        TaskManager.Async.runTask(AdvancedServerZones.getInstance(), () -> {
+            int size = Config.BORDER_SIZE.toInteger();
+            double centerX = Servers.BORDER_CENTER_X.toDouble();
+            double centerZ = Servers.BORDER_CENTER_Z.toDouble();
             double north = centerZ - size;
             double south = centerZ + size;
             double east = centerX + size;
             double west = centerX - size;
             for (Player p : Bukkit.getOnlinePlayers()) {
-                // Particles
                 new BorderParticles().sendBorderParticles(p);
 
                 if (p.getLocation().getBlockZ() <= north - 0.5) {
-                    if (Config.Servers.getNorth() == null || Config.Servers.getNorth().isEmpty()) {
+                    if (Servers.NORTH_SERVER.toString() == null || Servers.NORTH_SERVER.toString().isEmpty()) {
                         BorderDirection.NORTH.worldBorder(p);
                         continue;
                     }
@@ -31,14 +35,14 @@ public class BorderHandler {
                 }
 
                 if (p.getLocation().getBlockZ() >= south) {
-                    if (Config.Servers.getSouth() == null || Config.Servers.getSouth().isEmpty()) {
+                    if (Servers.SOUTH_SERVER.toString() == null || Servers.SOUTH_SERVER.toString().isEmpty()) {
                         BorderDirection.SOUTH.worldBorder(p);
                         continue;
                     }
                     BorderDirection.SOUTH.initTransfer(p);
                 }
                 if (p.getLocation().getBlockX() >= east) {
-                    if (Config.Servers.getEast() == null || Config.Servers.getEast().isEmpty()) {
+                    if (Servers.EAST_SERVER.toString() == null || Servers.EAST_SERVER.toString().isEmpty()) {
                         BorderDirection.EAST.worldBorder(p);
                         continue;
                     }
@@ -46,7 +50,7 @@ public class BorderHandler {
                 }
 
                 if (p.getLocation().getBlockX() <= west - .5) {
-                    if (Config.Servers.getWest() == null || Config.Servers.getWest().isEmpty()) {
+                    if (Servers.WEST_SERVER.toString() == null || Servers.WEST_SERVER.toString().isEmpty()) {
                         BorderDirection.WEST.worldBorder(p);
                         continue;
                     }
@@ -55,74 +59,86 @@ public class BorderHandler {
             }
         }, 5L);
     }
-
+    @SuppressWarnings("unused")
     public enum BorderDirection {
         NORTH {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Config.Servers.getNorth(), loc);
+                ConnectionHandler.transferServer(p, Servers.NORTH_SERVER.toString(), loc);
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Config.getBorderCenterZ() - Config.getBorderSize()) + 2);
-                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
-                        StringUtils.colorize(Config.Messages.getSubtitle()),
-                        1, 40, 1);
+                loc.setZ((Servers.BORDER_CENTER_Z.toDouble() - Config.BORDER_SIZE.toInteger()) + 2);
+                TaskManager.Sync.run(AdvancedServerZones.getInstance(), () -> p.teleport(loc));
+                Title title = Title.title(Lang.BORDER_TITLE.toFormattedComponent(), Lang.BORDER_SUBTITLE.toFormattedComponent(),
+                        Title.Times.times(
+                                Duration.of(50, ChronoUnit.MILLIS),
+                                Duration.of(2, ChronoUnit.SECONDS),
+                                Duration.of(50, ChronoUnit.MILLIS)));
+                p.showTitle(title);
             }
         },
         SOUTH {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Config.Servers.getSouth(), loc);
+                ConnectionHandler.transferServer(p, Servers.SOUTH_SERVER.toString(), loc);
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Config.getBorderCenterZ() + Config.getBorderSize()) - 2);
-                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
-                        StringUtils.colorize(Config.Messages.getSubtitle()),
-                        1, 40, 1);
+                loc.setZ((Servers.BORDER_CENTER_Z.toDouble() + Config.BORDER_SIZE.toInteger()) - 2);
+                TaskManager.Sync.run(AdvancedServerZones.getInstance(), () -> p.teleport(loc));
+                Title title = Title.title(Lang.BORDER_TITLE.toFormattedComponent(), Lang.BORDER_SUBTITLE.toFormattedComponent(),
+                        Title.Times.times(
+                                Duration.of(50, ChronoUnit.MILLIS),
+                                Duration.of(2, ChronoUnit.SECONDS),
+                                Duration.of(50, ChronoUnit.MILLIS)));
+                p.showTitle(title);
             }
         },
         EAST {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Config.Servers.getEast(), loc);
+                ConnectionHandler.transferServer(p, Servers.EAST_SERVER.toString(), loc);
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Config.getBorderCenterX() + Config.getBorderSize()) - 2);
-                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
-                        StringUtils.colorize(Config.Messages.getSubtitle()),
-                        1, 40, 1);
+                loc.setX((Servers.BORDER_CENTER_X.toDouble() + Config.BORDER_SIZE.toInteger()) - 2);
+                TaskManager.Sync.run(AdvancedServerZones.getInstance(), () -> p.teleport(loc));
+                Title title = Title.title(Lang.BORDER_TITLE.toFormattedComponent(), Lang.BORDER_SUBTITLE.toFormattedComponent(),
+                        Title.Times.times(
+                                Duration.of(50, ChronoUnit.MILLIS),
+                                Duration.of(2, ChronoUnit.SECONDS),
+                                Duration.of(50, ChronoUnit.MILLIS)));
+                p.showTitle(title);
             }
         },
         WEST {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Config.Servers.getWest(), loc);
+                ConnectionHandler.transferServer(p, Servers.WEST_SERVER.toString(), loc);
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Config.getBorderCenterX() - Config.getBorderSize()) + 2);
-                TaskManager.Sync.run(LoadDistribution.getInstance(), () -> p.teleport(loc));
-                p.sendTitle(StringUtils.colorize(Config.Messages.getTitle()),
-                        StringUtils.colorize(Config.Messages.getSubtitle()),
-                        1, 40, 1);
+                loc.setX((Servers.BORDER_CENTER_X.toDouble() - Config.BORDER_SIZE.toInteger()) + 2);
+                TaskManager.Sync.run(AdvancedServerZones.getInstance(), () -> p.teleport(loc));
+                Title title = Title.title(Lang.BORDER_TITLE.toFormattedComponent(), Lang.BORDER_SUBTITLE.toFormattedComponent(),
+                        Title.Times.times(
+                                Duration.of(50, ChronoUnit.MILLIS),
+                                Duration.of(2, ChronoUnit.SECONDS),
+                                Duration.of(50, ChronoUnit.MILLIS)));
+                p.showTitle(title);
             }
         };
 

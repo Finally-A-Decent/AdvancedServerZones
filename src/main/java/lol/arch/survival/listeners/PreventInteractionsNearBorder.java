@@ -1,7 +1,8 @@
 package lol.arch.survival.listeners;
 
 import lol.arch.survival.config.Config;
-import lol.arch.survival.util.StringUtils;
+import lol.arch.survival.config.Lang;
+import lol.arch.survival.config.Servers;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,23 +17,23 @@ public class PreventInteractionsNearBorder implements Listener {
     public boolean checkIfShouldPrevent(Player p, Location loc) {
         Vector from = loc.toVector();
 
-        if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() - Config.getBorderSize() - from.getBlockZ()) < 48) {
-            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
+        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 48) {
+            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
-        if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() + Config.getBorderSize() - from.getBlockX()) < 48) {
-            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
+        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 48) {
+            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
-        if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockZ() + Config.getBorderSize() - from.getBlockZ()) < 48) {
-            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
+        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 48) {
+            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
-        if (Math.abs(new Vector(Config.getBorderCenterX(), 0, Config.getBorderCenterZ()).getBlockX() - Config.getBorderSize() - from.getBlockX()) < 48) {
-            p.sendMessage(StringUtils.colorize(Config.Messages.getNoTouchy()));
+        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(), 0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 48) {
+            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 

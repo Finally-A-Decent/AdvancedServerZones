@@ -1,15 +1,17 @@
 name: AdvancedServerZones
 description: The plugin that handles zone transfers and borders
 version: '${version}'
-main: lol.arch.survival.LoadDistribution
+main: lol.arch.survival.AdvancedServerZones
 api-version: '1.16'
 authors: [Preva1l]
+
+softdepend: [PlaceholderAPI, Vault]
 
 libraries:
   - 'redis.clients:jedis:5.1.0'
   - 'org.apache.commons:commons-pool2:2.12.0'
 
 commands:
-  zones-reload-config:
+  asz-reload-config:
     description: Reloads the Config
-    permission: survival.reload
+    permission: advancedserverzones.reload
