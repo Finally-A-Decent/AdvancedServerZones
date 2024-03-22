@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'lol.arch'
@@ -15,6 +16,7 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT'
+    implementation project(':AdvancedServerZonesAPI')
 
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'me.clip:placeholderapi:2.11.5'
@@ -53,4 +55,10 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+shadowJar {
+    project(':AdvancedServerZonesAPI')
+    destinationDirectory.set(file("$rootDir/target"))
+    archiveClassifier = ''
 }
