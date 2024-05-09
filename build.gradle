@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT'
-    implementation project(':AdvancedServerZonesAPI')
+    implementation project(':API')
 
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'me.clip:placeholderapi:2.11.5'
@@ -58,7 +58,7 @@ processResources {
 }
 
 shadowJar {
-    project(':AdvancedServerZonesAPI')
+    project(':API')
     destinationDirectory.set(file("$rootDir/target"))
     archiveClassifier = ''
 }

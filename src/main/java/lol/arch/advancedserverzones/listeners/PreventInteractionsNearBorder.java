@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
 public class PreventInteractionsNearBorder implements Listener {
@@ -51,7 +52,10 @@ public class PreventInteractionsNearBorder implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void blockInteractListener(BlockBreakEvent e) {
-        e.setCancelled(checkIfShouldPrevent(e.getPlayer(), e.getBlock().getLocation()));
+    public void interactListener(PlayerInteractEvent e) {
+        if (e.getInteractionPoint() == null) {
+            return;
+        }
+        e.setCancelled(checkIfShouldPrevent(e.getPlayer(), e.getInteractionPoint()));
     }
 }

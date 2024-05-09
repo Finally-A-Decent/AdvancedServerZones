@@ -19,5 +19,6 @@ dependencies {
 }
 
 jar {
+    archiveFileName = "${rootProject.name}-${project.name.capitalize()}.jar"
     destinationDirectory.set(file("$rootDir/target"))
 }

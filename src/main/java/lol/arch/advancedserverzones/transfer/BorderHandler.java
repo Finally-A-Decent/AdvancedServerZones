@@ -143,8 +143,6 @@ public class BorderHandler {
         };
 
         public abstract void initTransfer(Player p);
-
         public abstract void worldBorder(Player p);
     }
-
 }

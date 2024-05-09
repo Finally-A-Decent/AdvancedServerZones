@@ -21,7 +21,7 @@ import redis.clients.jedis.JedisPubSub;
 
 import java.util.UUID;
 
-public class ChatSync extends JedisPubSub implements Listener {
+public final class ChatSync extends JedisPubSub implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     private void chatMessageListener(AsyncChatEvent event) {
         event.setCancelled(true);
