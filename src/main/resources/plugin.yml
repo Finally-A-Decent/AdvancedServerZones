@@ -1,7 +1,7 @@
 name: AdvancedServerZones
 description: The plugin that handles zone transfers and borders
 version: '${version}'
-main: info.preva1l.advancedserverzones.AdvancedServerZones
+main: lol.arch.advancedserverzones.AdvancedServerZones
 api-version: '1.16'
 authors: [Preva1l]
 
