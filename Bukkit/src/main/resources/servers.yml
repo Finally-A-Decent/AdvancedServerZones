@@ -1,0 +1,15 @@
+# Why is this separate?
+# So you can have config.yml and lang.yml sync automatically
+#     improving your workflow when setting up new regions!
+
+border:
+  centerX: 0 # Negative is West, Positive is East
+  centerZ: 0 # Negative is North, Positive is South
+
+current-server: "survival-zone-02"
+
+servers: # Must match bungee config.yml (or velocity.toml)
+  north: "survival-zone-01"
+  south: "survival-zone-06"
+  east: "survival-spawn-01"
+  west: "" # Leave blank for it to be the world border
