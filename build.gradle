@@ -1,64 +1,85 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.github.goooler.shadow' version '8.1.7'
 }
 
-group = 'lol.arch'
-version = '1.0'
+group = 'info.preva1l'
+version = "1.0.0"
 
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://repo.papermc.io/repository/maven-public/' }
-    maven { url 'https://oss.sonatype.org/content/groups/public/' }
-    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-}
+allprojects {
+    apply plugin: 'io.github.goooler.shadow'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
 
-dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT'
-    implementation project(':API')
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
-    compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
-    compileOnly 'me.clip:placeholderapi:2.11.5'
+    compileJava.options.encoding = 'UTF-8'
+    javadoc.options.encoding = 'UTF-8'
+    javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
-    compileOnly 'redis.clients:jedis:5.1.0'
-    compileOnly 'org.apache.commons:commons-pool2:2.12.0'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.papermc.io/repository/maven-public/' }
+        maven { url 'https://oss.sonatype.org/content/groups/public/' }
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    }
 
-    compileOnly 'org.jetbrains:annotations:24.1.0'
+    dependencies {
+        compileOnly 'org.jetbrains:annotations:24.0.0'
+        compileOnly 'org.projectlombok:lombok:1.18.32'
+        annotationProcessor 'org.projectlombok:lombok:1.18.32'
+        annotationProcessor 'org.jetbrains:annotations:24.0.0'
+    }
 
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
-}
+    test {
+        useJUnitPlatform()
+    }
 
-def targetJavaVersion = 17
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    processResources {
+        def props = [version: rootProject.version]
+        inputs.properties props
+        filteringCharset 'UTF-8'
+        filesMatching('plugin.yml') {
+            expand props
+        }
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+subprojects {
+    version rootProject.version
+    archivesBaseName = "${rootProject.name}-${project.name.capitalize()}"
 
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
+    shadowJar {
+        destinationDirectory.set(file("$rootDir/target"))
+        archiveClassifier.set('')
+        //minimize()
     }
-}
 
-processResources {
-    def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allSource
+        archiveClassifier.set('sources')
     }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        archiveClassifier.set('javadoc')
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact shadowJar
+                artifact(tasks.named('sourceJar'))
+                artifact(tasks.named('javadocJar'))
+            }
+        }
+    }
+
+    jar.dependsOn shadowJar
+    clean.delete "$rootDir/target"
 }
 
-shadowJar {
-    project(':API')
-    destinationDirectory.set(file("$rootDir/target"))
-    archiveClassifier = ''
-}
+logger.lifecycle("Building AdvancedServerZones ${version}")

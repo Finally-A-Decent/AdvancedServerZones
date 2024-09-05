@@ -18,7 +18,6 @@ public class ChatSyncSendEvent extends Event {
         super(true);
         this.sender = sender;
         this.message = message;
-        Bukkit.getServer().getPluginManager().callEvent(this);
     }
 
     @Override

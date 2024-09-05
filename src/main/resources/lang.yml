@@ -1,6 +1,0 @@
-# MiniMessage Format
-reloaded: "<green>Plugin Reloaded"
-cannot-interact-here: "<gray>[<dark_red>!<gray>] <red>You cannot interact within <white>3 chunks <red>of the region border!"
-world-border:
-  title: "<red>You have reached the world border!"
-  subtitle: "<gray>Try exploring a different direction!"
