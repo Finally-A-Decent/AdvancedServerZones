@@ -27,7 +27,6 @@ public class ConnectionHandler implements Listener {
      */
     public static void transferServer(@NotNull Player player, @NotNull String server, Location location) {
         try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
-            jedis.auth(Config.REDIS_PASSWORD.toString());
             jedis.set(getTeleportationToLocationKey(player), locationToString(location, player));
         }
 
@@ -76,7 +75,6 @@ public class ConnectionHandler implements Listener {
     public static String getPlayerToLocation(Player player) {
         String toLocation;
         try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
-            jedis.auth(Config.REDIS_PASSWORD.toString());
             toLocation = jedis.get(getTeleportationToLocationKey(player));
         }
         return toLocation;
@@ -84,7 +82,6 @@ public class ConnectionHandler implements Listener {
 
     public static void clearTeleportKeyFromRedis(String key) {
         try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
-            jedis.auth(Config.REDIS_PASSWORD.toString());
             jedis.del(key);
         }
     }

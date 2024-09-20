@@ -20,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisAccessControlException;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
@@ -66,22 +67,7 @@ public final class AdvancedServerZones extends JavaPlugin {
             }
         }
 
-        TaskManager.Async.run(this, () -> {
-            getConsole().info("Connecting to Redis Pool...");
-            pool = new JedisPool(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger());
-            pool.setMaxTotal(2);
-            try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
-                jedis.auth(Config.REDIS_PASSWORD.toString());
-                jedis.ping();
-                if (Config.CHAT_SYNC.toBoolean()) jedis.subscribe(chatSync, "asz.chat-sync");
-            } catch (JedisConnectionException | JedisAccessControlException e) {
-                getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
-                getConsole().severe("Now stopping the server!");
-                Bukkit.shutdown();
-                return;
-            }
-            getConsole().info("Redis Connected Successfully!");
-        });
+        connectToRedis();
 
         new BorderHandler();
 
@@ -95,5 +81,27 @@ public final class AdvancedServerZones extends JavaPlugin {
         if (chatSync != null && chatSync.isSubscribed()) chatSync.unsubscribe("asz.chat-sync");
         Bukkit.getScheduler().cancelTasks(this);
         getConsole().info("Advanced Server Zones Disabled");
+    }
+
+    private void connectToRedis() {
+        TaskManager.Async.run(this, () -> {
+            getConsole().info("Connecting to Redis Pool...");
+            final JedisPoolConfig config = new JedisPoolConfig();
+            config.setMaxIdle(0);
+            config.setMaxTotal(2);
+            config.setTestOnBorrow(true);
+            config.setTestOnReturn(true);
+            pool = new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, Config.REDIS_PASSWORD.toString(), false);
+            try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
+                jedis.ping();
+                if (Config.CHAT_SYNC.toBoolean()) jedis.subscribe(chatSync, "asz.chat-sync");
+            } catch (JedisConnectionException | JedisAccessControlException e) {
+                getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
+                getConsole().severe("Now stopping the server!");
+                Bukkit.shutdown();
+                return;
+            }
+            getConsole().info("Redis Connected Successfully!");
+        });
     }
 }
