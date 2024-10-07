@@ -13,7 +13,6 @@ import info.preva1l.advancedserverzones.transfer.ConnectionHandler;
 import info.preva1l.advancedserverzones.util.BasicConfig;
 import info.preva1l.advancedserverzones.util.Metrics;
 import info.preva1l.advancedserverzones.util.TaskManager;
-import lol.arch.advancedserverzones.AdvancedServerZonesAPI;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;

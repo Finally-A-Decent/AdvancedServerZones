@@ -1,4 +1,4 @@
-package lol.arch.advancedserverzones;
+package info.preva1l.advancedserverzones;
 
 import lombok.Getter;
 import org.bukkit.Chunk;

@@ -1,4 +1,4 @@
-package lol.arch.advancedserverzones;
+package info.preva1l.advancedserverzones;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public class ChatSyncReceiveEvent extends Event {
+public class ChatSyncSendEvent extends Event {
     @Getter private static final HandlerList handlerList = new HandlerList();
     @Getter private final UUID sender;
     @Getter private final String message;
 
-    public ChatSyncReceiveEvent(UUID sender, String message) {
+    public ChatSyncSendEvent(UUID sender, String message) {
         super(true);
         this.sender = sender;
         this.message = message;

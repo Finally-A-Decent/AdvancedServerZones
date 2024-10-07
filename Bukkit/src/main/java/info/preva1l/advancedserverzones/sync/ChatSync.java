@@ -2,8 +2,8 @@ package info.preva1l.advancedserverzones.sync;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import info.preva1l.advancedserverzones.AdvancedServerZones;
-import lol.arch.advancedserverzones.ChatSyncReceiveEvent;
-import lol.arch.advancedserverzones.ChatSyncSendEvent;
+import info.preva1l.advancedserverzones.ChatSyncReceiveEvent;
+import info.preva1l.advancedserverzones.ChatSyncSendEvent;
 import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Servers;
 import info.preva1l.advancedserverzones.util.StringUtils;
