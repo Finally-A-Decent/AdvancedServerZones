@@ -11,6 +11,7 @@ import info.preva1l.advancedserverzones.sync.PlaceholderManager;
 import info.preva1l.advancedserverzones.transfer.BorderHandler;
 import info.preva1l.advancedserverzones.transfer.ConnectionHandler;
 import info.preva1l.advancedserverzones.util.BasicConfig;
+import info.preva1l.advancedserverzones.util.Metrics;
 import info.preva1l.advancedserverzones.util.TaskManager;
 import lol.arch.advancedserverzones.AdvancedServerZonesAPI;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import java.util.logging.Logger;
 
 public final class AdvancedServerZones extends JavaPlugin {
     private static final String BUYER = "%%__USERNAME__%%.%%_USER_%%";
+    private static final int METRICS_ID = 23558;
 
     @Getter private static AdvancedServerZones instance;
 
@@ -39,6 +41,8 @@ public final class AdvancedServerZones extends JavaPlugin {
     @Getter private BasicConfig configFile;
     @Getter private BasicConfig serversFile;
     @Getter private BasicConfig langFile;
+
+    private Metrics metrics;
 
     @Override
     public void onEnable() {
@@ -69,6 +73,8 @@ public final class AdvancedServerZones extends JavaPlugin {
             }
         }
 
+        metrics = new Metrics(this, METRICS_ID);
+
         connectToRedis();
 
         new BorderHandler();
@@ -82,6 +88,7 @@ public final class AdvancedServerZones extends JavaPlugin {
     public void onDisable() {
         if (chatSync != null && chatSync.isSubscribed()) chatSync.unsubscribe("asz.chat-sync");
         Bukkit.getScheduler().cancelTasks(this);
+        metrics.shutdown();
         getConsole().info("Advanced Server Zones Disabled");
     }
 
