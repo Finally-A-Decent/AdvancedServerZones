@@ -28,6 +28,8 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class AdvancedServerZones extends JavaPlugin {
+    private static final String BUYER = "%%__USERNAME__%%.%%_USER_%%";
+
     @Getter private static AdvancedServerZones instance;
 
     @Getter private Logger console;

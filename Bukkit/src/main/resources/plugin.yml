@@ -1,8 +1,8 @@
 name: AdvancedServerZones
-description: The plugin that handles zone transfers and borders
+description: The plugin that handles zone transfers and borders.
 version: '${version}'
 main: info.preva1l.advancedserverzones.AdvancedServerZones
-api-version: '1.16'
+api-version: '1.20'
 authors: [Preva1l]
 
 softdepend: [PlaceholderAPI, Vault]
