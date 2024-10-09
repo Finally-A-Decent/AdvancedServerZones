@@ -24,6 +24,17 @@ public class TaskManager {
         public void run(JavaPlugin plugin, Runnable runnable) {
             plugin.getServer().getScheduler().runTask(plugin, runnable);
         }
+
+        /**
+         * Run a synchronous task once with a delay.
+         *
+         * @param plugin   The current plugin typeof JavaPlugin. (Not Commons)
+         * @param runnable The runnable, lambda supported yeh
+         * @param delay How long to wait in ticks
+         */
+        public void runLater(JavaPlugin plugin, Runnable runnable, long delay) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, runnable, delay);
+        }
     }
 
     /**

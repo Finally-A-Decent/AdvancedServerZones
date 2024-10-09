@@ -17,8 +17,8 @@ public enum Config {
     BORDER_SIZE("border.size", 20),
     // Visual
     PARTICLE_COLOR("border.particle.color", ImmutableList.of(0, 0, 0)),
-    RAINBOW_PARTICLES("border.particles.rainbow", false),
-    RAINBOW_HARSHNESS("border.particles.rainbow-harshness", 5),
+    RAINBOW_PARTICLES("border.particle.rainbow", false),
+    RAINBOW_HARSHNESS("border.particle.rainbow-harshness", 5),
 
     /*
      * Chat Sync

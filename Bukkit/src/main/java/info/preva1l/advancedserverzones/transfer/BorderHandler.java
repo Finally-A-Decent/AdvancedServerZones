@@ -66,7 +66,7 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.NORTH_SERVER.toString(), loc);
+                ConnectionHandler.transferServer(p, Servers.NORTH_SERVER.toString(), loc, p.getVelocity());
             }
 
             @Override
@@ -80,7 +80,7 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.SOUTH_SERVER.toString(), loc);
+                ConnectionHandler.transferServer(p, Servers.SOUTH_SERVER.toString(), loc, p.getVelocity());
             }
 
             @Override
@@ -94,7 +94,7 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.EAST_SERVER.toString(), loc);
+                ConnectionHandler.transferServer(p, Servers.EAST_SERVER.toString(), loc, p.getVelocity());
             }
 
             @Override
@@ -108,7 +108,7 @@ public class BorderHandler {
             @Override
             public void initTransfer(Player p) {
                 Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.WEST_SERVER.toString(), loc);
+                ConnectionHandler.transferServer(p, Servers.WEST_SERVER.toString(), loc, p.getVelocity());
             }
 
             @Override

@@ -6,6 +6,7 @@ border:
   centerX: 0 # Negative is West, Positive is East
   centerZ: 0 # Negative is North, Positive is South
 
+# Is visual for placeholder only
 current-server: "survival-zone-02"
 
 servers: # Must match bungee config.yml (or velocity.toml)

@@ -81,6 +81,7 @@ public final class AdvancedServerZones extends JavaPlugin {
         AdvancedServerZonesAPI.setInstance(new ImplAdvancedServerZonesAPI());
 
         getConsole().info("Advanced Server Zones Loaded");
+        getConsole().info("Licenced to: " + BUYER);
     }
 
     @Override
@@ -99,7 +100,9 @@ public final class AdvancedServerZones extends JavaPlugin {
             config.setMaxTotal(2);
             config.setTestOnBorrow(true);
             config.setTestOnReturn(true);
-            pool = new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, Config.REDIS_PASSWORD.toString(), false);
+            pool = Config.REDIS_PASSWORD.toString().isEmpty()
+                    ? new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, false)
+                    : new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, Config.REDIS_PASSWORD.toString(), false);
             try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
                 jedis.ping();
                 if (Config.CHAT_SYNC.toBoolean()) jedis.subscribe(chatSync, "asz.chat-sync");
