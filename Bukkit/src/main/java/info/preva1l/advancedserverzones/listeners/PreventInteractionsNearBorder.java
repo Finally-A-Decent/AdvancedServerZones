@@ -19,25 +19,25 @@ public class PreventInteractionsNearBorder implements Listener {
         Vector from = loc.toVector();
 
         if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 48) {
+                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 49) {
             p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
         if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 48) {
+                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 49) {
             p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
         if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 48) {
+                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 49) {
             p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
 
         if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 48) {
+                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 49) {
             p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
             return true;
         }
