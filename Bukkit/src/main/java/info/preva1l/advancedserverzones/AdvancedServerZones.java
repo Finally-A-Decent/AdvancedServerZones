@@ -5,7 +5,6 @@ import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.chat.ChatSync;
 import info.preva1l.advancedserverzones.listeners.PreventInteractionsNearBorder;
 import info.preva1l.advancedserverzones.chat.PlaceholderManager;
-import info.preva1l.advancedserverzones.borders.BorderService;
 import info.preva1l.advancedserverzones.borders.ConnectionService;
 import info.preva1l.advancedserverzones.util.Logger;
 import info.preva1l.trashcan.plugin.BasePlugin;
@@ -16,13 +15,14 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.stream.Stream;
 
-public final class AdvancedServerZones extends BasePlugin {
+@Getter
+public class AdvancedServerZones extends BasePlugin {
     private static final String PURCHASER = "%%__USERNAME__%%";
     public static final @SuppressWarnings("ConstantValue") boolean VALID_PURCHASE = !PURCHASER.contains("__USERNAME__");
 
     private static AdvancedServerZones instance;
 
-    @Getter private ChatSync chatSync;
+    private ChatSync chatSync;
 
     public AdvancedServerZones() {
         instance = this;
@@ -31,7 +31,7 @@ public final class AdvancedServerZones extends BasePlugin {
     @PluginEnable
     public void enable() {
         Stream.of(
-                new ConnectionService(),
+                ConnectionService.instance,
                 new PreventInteractionsNearBorder()
         ).forEach(e -> getServer().getPluginManager().registerEvents(e, this));
 
@@ -46,8 +46,6 @@ public final class AdvancedServerZones extends BasePlugin {
                 if (registration != null) PlaceholderManager.setChat(registration.getProvider());
             }
         }
-
-        new BorderService();
 
         AdvancedServerZonesAPI.setInstance(new ImplAdvancedServerZonesAPI());
 
