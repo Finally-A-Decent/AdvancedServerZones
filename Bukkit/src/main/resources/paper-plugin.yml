@@ -1,0 +1,20 @@
+api-version: "1.19"
+name: AdvancedServerZones
+version: 1.1.0
+main: info.preva1l.advancedserverzones.AdvancedServerZones
+loader: info.preva1l.fadah.trashcan.plugin.libloader.BaseLibraryLoader
+description: "A feature rich zoning/sharding system for paper."
+load: STARTUP
+author: Preva1l
+website: https://docs.preva1l.info/
+folia-supported: true
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: AFTER
+      required: false
+      join-classpath: true
+    Vault:
+      load: AFTER
+      required: false
+      join-classpath: true
