@@ -7,6 +7,7 @@ import info.preva1l.advancedserverzones.network.RedisBroker;
 import info.preva1l.advancedserverzones.network.types.TransferData;
 import info.preva1l.advancedserverzones.util.TaskManager;
 import info.preva1l.trashcan.flavor.annotations.Configure;
+import info.preva1l.trashcan.flavor.annotations.Service;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import java.time.Duration;
 import java.util.*;
 
+@Service
 public class ConnectionService implements Listener {
     public static final ConnectionService instance = new ConnectionService();
 
