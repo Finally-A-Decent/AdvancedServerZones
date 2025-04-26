@@ -1,6 +1,7 @@
 package info.preva1l.advancedserverzones;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -38,9 +39,9 @@ public abstract class AdvancedServerZonesAPI {
      * Send a chat message using chat sync, works no matter what mode is selected.
      * You are required to use this if the API mode is selected in the AdvancedServerZones config.
      * @param sender uuid of the sender of the message {@link ChatSyncSendEvent#getSender()}
-     * @param message string of message {@link ChatSyncSendEvent#getMessage()}
+     * @param message component message {@link ChatSyncSendEvent#getMessage()}
      */
-    public abstract void sendChatSyncMessage(UUID sender, String message);
+    public abstract void sendChatSyncMessage(UUID sender, Component message);
 
     @ApiStatus.Internal
     public static void setInstance(AdvancedServerZonesAPI newInstance) {

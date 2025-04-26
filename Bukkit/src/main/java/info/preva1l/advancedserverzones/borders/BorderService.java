@@ -1,10 +1,14 @@
-package info.preva1l.advancedserverzones.transfer;
+package info.preva1l.advancedserverzones.borders;
 
 import info.preva1l.advancedserverzones.AdvancedServerZones;
 import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Lang;
 import info.preva1l.advancedserverzones.config.Servers;
+import info.preva1l.advancedserverzones.network.types.TransferData;
 import info.preva1l.advancedserverzones.util.TaskManager;
+import info.preva1l.advancedserverzones.util.Text;
+import info.preva1l.trashcan.flavor.annotations.Configure;
+import info.preva1l.trashcan.flavor.annotations.Service;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,22 +17,26 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-public class BorderHandler {
-    public BorderHandler() {
-        TaskManager.Async.runTask(AdvancedServerZones.getInstance(), () -> {
-            int size = Config.BORDER_SIZE.toInteger();
-            double centerX = Servers.BORDER_CENTER_X.toDouble();
-            double centerZ = Servers.BORDER_CENTER_Z.toDouble();
+@Service
+public class BorderService {
+    public static final BorderService instance = new BorderService();
+
+    @Configure
+    public void configure() {
+        TaskManager.Async.runTask(AdvancedServerZones.i(), () -> {
+            int size = Config.i().getBorder().getSize();
+            double centerX = Servers.i().getBorder().centerX();
+            double centerZ = Servers.i().getBorder().centerZ();
             double north = centerZ - size;
             double south = centerZ + size;
             double east = centerX + size;
             double west = centerX - size;
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                new BorderParticles().sendBorderParticles(p);
+                BorderParticles.sendBorderParticles(p);
 
                 if (p.getLocation().getBlockZ() <= north - 0.5) {
-                    if (Servers.NORTH_SERVER.toString() == null || Servers.NORTH_SERVER.toString().isEmpty()) {
+                    if (Servers.i().getNorth() == null || Servers.i().getNorth().isEmpty()) {
                         BorderDirection.NORTH.worldBorder(p);
                         continue;
                     }
@@ -36,14 +44,15 @@ public class BorderHandler {
                 }
 
                 if (p.getLocation().getBlockZ() >= south) {
-                    if (Servers.SOUTH_SERVER.toString() == null || Servers.SOUTH_SERVER.toString().isEmpty()) {
+                    if (Servers.i().getSouth() == null || Servers.i().getSouth().isEmpty()) {
                         BorderDirection.SOUTH.worldBorder(p);
                         continue;
                     }
                     BorderDirection.SOUTH.initTransfer(p);
                 }
+
                 if (p.getLocation().getBlockX() >= east) {
-                    if (Servers.EAST_SERVER.toString() == null || Servers.EAST_SERVER.toString().isEmpty()) {
+                    if (Servers.i().getEast() == null || Servers.i().getEast().isEmpty()) {
                         BorderDirection.EAST.worldBorder(p);
                         continue;
                     }
@@ -51,7 +60,7 @@ public class BorderHandler {
                 }
 
                 if (p.getLocation().getBlockX() <= west - .5) {
-                    if (Servers.WEST_SERVER.toString() == null || Servers.WEST_SERVER.toString().isEmpty()) {
+                    if (Servers.i().getWest() == null || Servers.i().getWest().isEmpty()) {
                         BorderDirection.WEST.worldBorder(p);
                         continue;
                     }
@@ -65,66 +74,91 @@ public class BorderHandler {
         NORTH {
             @Override
             public void initTransfer(Player p) {
-                Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.NORTH_SERVER.toString(), loc, p.getVelocity());
+                ConnectionService.instance.transferServer(
+                        new TransferData(
+                                p.getUniqueId(),
+                                Servers.i().getNorth(),
+                                TransferData.Position.from(p.getLocation()),
+                                p.getPing()
+                        )
+                );
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Servers.BORDER_CENTER_Z.toDouble() - Config.BORDER_SIZE.toInteger()) + 2);
+                loc.setZ((Servers.i().getBorder().centerZ() - Config.i().getBorder().getSize()) + 2);
                 handleBorder(p, loc);
             }
         },
         SOUTH {
             @Override
             public void initTransfer(Player p) {
-                Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.SOUTH_SERVER.toString(), loc, p.getVelocity());
+                ConnectionService.instance.transferServer(
+                        new TransferData(
+                                p.getUniqueId(),
+                                Servers.i().getSouth(),
+                                TransferData.Position.from(p.getLocation()),
+                                p.getPing()
+                        )
+                );
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setZ((Servers.BORDER_CENTER_Z.toDouble() + Config.BORDER_SIZE.toInteger()) - 2);
+                loc.setZ((Servers.i().getBorder().centerZ() + Config.i().getBorder().getSize()) - 2);
                 handleBorder(p, loc);
             }
         },
         EAST {
             @Override
             public void initTransfer(Player p) {
-                Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.EAST_SERVER.toString(), loc, p.getVelocity());
+                ConnectionService.instance.transferServer(
+                        new TransferData(
+                                p.getUniqueId(),
+                                Servers.i().getEast(),
+                                TransferData.Position.from(p.getLocation()),
+                                p.getPing()
+                        )
+                );
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Servers.BORDER_CENTER_X.toDouble() + Config.BORDER_SIZE.toInteger()) - 2);
+                loc.setX((Servers.i().getBorder().centerX() + Config.i().getBorder().getSize()) - 2);
                 handleBorder(p, loc);
             }
         },
         WEST {
             @Override
             public void initTransfer(Player p) {
-                Location loc = p.getLocation();
-                ConnectionHandler.transferServer(p, Servers.WEST_SERVER.toString(), loc, p.getVelocity());
+                ConnectionService.instance.transferServer(
+                        new TransferData(
+                                p.getUniqueId(),
+                                Servers.i().getWest(),
+                                TransferData.Position.from(p.getLocation()),
+                                p.getPing()
+                        )
+                );
             }
 
             @Override
             public void worldBorder(Player p) {
                 Location loc = p.getLocation();
-                loc.setX((Servers.BORDER_CENTER_X.toDouble() - Config.BORDER_SIZE.toInteger()) + 2);
+                loc.setX((Servers.i().getBorder().centerX() - Config.i().getBorder().getSize()) + 2);
                 handleBorder(p, loc);
             }
         };
 
         public abstract void initTransfer(Player p);
+
         public abstract void worldBorder(Player p);
 
         protected void handleBorder(Player p, Location tpLoc) {
             p.teleportAsync(tpLoc).thenRun(() -> {
-                Title title = Title.title(Lang.BORDER_TITLE.toFormattedComponent(), Lang.BORDER_SUBTITLE.toFormattedComponent(),
+                Title title = Title.title(Text.text(Lang.i().getBorder().title()), Text.text(Lang.i().getBorder().title()),
                         Title.Times.times(
                                 Duration.of(50, ChronoUnit.MILLIS),
                                 Duration.of(2, ChronoUnit.SECONDS),

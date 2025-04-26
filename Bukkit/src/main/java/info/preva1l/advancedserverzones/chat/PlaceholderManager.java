@@ -1,4 +1,4 @@
-package info.preva1l.advancedserverzones.sync;
+package info.preva1l.advancedserverzones.chat;
 
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
@@ -11,16 +11,16 @@ import net.milkbowl.vault.chat.Chat;
 public class PlaceholderManager {
     @Setter private Chat chat;
     public String getPrefix(Player player) {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+        if (chat != null) {
             return chat.getPlayerPrefix(player);
         }
-        return "{prefix}";
+        return "";
     }
     public String getSuffix(Player player) {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+        if (chat != null) {
             return chat.getPlayerSuffix(player);
         }
-        return "{suffix}";
+        return "";
     }
     public String formatWithPAPI(Player player, String toFormat) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

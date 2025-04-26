@@ -1,68 +1,43 @@
 package info.preva1l.advancedserverzones;
 
 import info.preva1l.advancedserverzones.api.ImplAdvancedServerZonesAPI;
-import info.preva1l.advancedserverzones.commands.ReloadCommand;
 import info.preva1l.advancedserverzones.config.Config;
-import info.preva1l.advancedserverzones.config.Lang;
-import info.preva1l.advancedserverzones.config.Servers;
-import info.preva1l.advancedserverzones.sync.ChatSync;
+import info.preva1l.advancedserverzones.chat.ChatSync;
 import info.preva1l.advancedserverzones.listeners.PreventInteractionsNearBorder;
-import info.preva1l.advancedserverzones.sync.PlaceholderManager;
-import info.preva1l.advancedserverzones.transfer.BorderHandler;
-import info.preva1l.advancedserverzones.transfer.ConnectionHandler;
-import info.preva1l.advancedserverzones.util.BasicConfig;
-import info.preva1l.advancedserverzones.util.Metrics;
-import info.preva1l.advancedserverzones.util.TaskManager;
+import info.preva1l.advancedserverzones.chat.PlaceholderManager;
+import info.preva1l.advancedserverzones.borders.BorderService;
+import info.preva1l.advancedserverzones.borders.ConnectionService;
+import info.preva1l.advancedserverzones.util.Logger;
+import info.preva1l.trashcan.plugin.BasePlugin;
+import info.preva1l.trashcan.plugin.annotations.PluginEnable;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.exceptions.JedisAccessControlException;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import java.util.Objects;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
 
-public final class AdvancedServerZones extends JavaPlugin {
-    private static final String BUYER = "%%__USERNAME__%% . %%__USER__%%";
-    private static final int METRICS_ID = 23558;
+public final class AdvancedServerZones extends BasePlugin {
+    private static final String PURCHASER = "%%__USERNAME__%%";
+    public static final @SuppressWarnings("ConstantValue") boolean VALID_PURCHASE = !PURCHASER.contains("__USERNAME__");
 
-    @Getter private static AdvancedServerZones instance;
+    private static AdvancedServerZones instance;
 
-    @Getter private Logger console;
-    @Getter private JedisPool pool;
     @Getter private ChatSync chatSync;
 
-    @Getter private BasicConfig configFile;
-    @Getter private BasicConfig serversFile;
-    @Getter private BasicConfig langFile;
-
-    private Metrics metrics;
-
-    @Override
-    public void onEnable() {
+    public AdvancedServerZones() {
         instance = this;
-        console = getLogger();
+    }
 
-        configFile = new BasicConfig(this, "config.yml");
-        serversFile = new BasicConfig(this, "servers.yml");
-        langFile = new BasicConfig(this, "lang.yml");
-        Config.loadDefault();
-        Servers.loadDefault();
-        Lang.loadDefault();
-
-        getServer().getPluginManager().registerEvents(new ConnectionHandler(), this);
-        getServer().getPluginManager().registerEvents(new PreventInteractionsNearBorder(), this);
-
-        Objects.requireNonNull(getCommand("asz-reload-config")).setExecutor(new ReloadCommand());
+    @PluginEnable
+    public void enable() {
+        Stream.of(
+                new ConnectionService(),
+                new PreventInteractionsNearBorder()
+        ).forEach(e -> getServer().getPluginManager().registerEvents(e, this));
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        if (Config.CHAT_SYNC.toBoolean()) {
+        if (Config.i().getChatsync().isEnabled()) {
             chatSync = new ChatSync();
             getServer().getPluginManager().registerEvents(chatSync, this);
 
@@ -72,47 +47,19 @@ public final class AdvancedServerZones extends JavaPlugin {
             }
         }
 
-        metrics = new Metrics(this, METRICS_ID);
-
-        connectToRedis();
-
-        new BorderHandler();
+        new BorderService();
 
         AdvancedServerZonesAPI.setInstance(new ImplAdvancedServerZonesAPI());
 
-        getConsole().info("Advanced Server Zones Loaded");
-        getConsole().info("Licenced to: " + BUYER);
+        Logger.info("Advanced Server Zones Loaded");
+        if (VALID_PURCHASE) {
+            Logger.info("Licenced to: " + PURCHASER);
+        } else {
+            Logger.info("Running free version!");
+        }
     }
 
-    @Override
-    public void onDisable() {
-        if (chatSync != null && chatSync.isSubscribed()) chatSync.unsubscribe("asz.chat-sync");
-        Bukkit.getScheduler().cancelTasks(this);
-        metrics.shutdown();
-        getConsole().info("Advanced Server Zones Disabled");
-    }
-
-    private void connectToRedis() {
-        TaskManager.Async.run(this, () -> {
-            getConsole().info("Connecting to Redis Pool...");
-            final JedisPoolConfig config = new JedisPoolConfig();
-            config.setMaxIdle(0);
-            config.setMaxTotal(2);
-            config.setTestOnBorrow(true);
-            config.setTestOnReturn(true);
-            pool = Config.REDIS_PASSWORD.toString().isEmpty()
-                    ? new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, false)
-                    : new JedisPool(config, Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), 0, Config.REDIS_PASSWORD.toString(), false);
-            try (Jedis jedis = AdvancedServerZones.getInstance().getPool().getResource()) {
-                jedis.ping();
-                if (Config.CHAT_SYNC.toBoolean()) jedis.subscribe(chatSync, "asz.chat-sync");
-            } catch (JedisConnectionException | JedisAccessControlException e) {
-                getConsole().severe("REDIS DID NOT CONNECT: " + e.getMessage());
-                getConsole().severe("Now stopping the server!");
-                Bukkit.shutdown();
-                return;
-            }
-            getConsole().info("Redis Connected Successfully!");
-        });
+    public static AdvancedServerZones i() {
+        return instance;
     }
 }

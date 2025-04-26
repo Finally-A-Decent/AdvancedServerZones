@@ -3,6 +3,7 @@ package info.preva1l.advancedserverzones.listeners;
 import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Lang;
 import info.preva1l.advancedserverzones.config.Servers;
+import info.preva1l.advancedserverzones.util.Text;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,27 +19,27 @@ public class PreventInteractionsNearBorder implements Listener {
     public boolean checkIfShouldPrevent(Player p, Location loc) {
         Vector from = loc.toVector();
 
-        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() - Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 49) {
-            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
+        if (Math.abs(new Vector(Servers.i().getBorder().centerX(),
+                0, Servers.i().getBorder().centerZ()).getBlockZ() - Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
+            p.sendMessage(Text.text(Lang.i().getCannotInteract()));
             return true;
         }
 
-        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() + Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 49) {
-            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
+        if (Math.abs(new Vector(Servers.i().getBorder().centerX(),
+                0, Servers.i().getBorder().centerZ()).getBlockX() + Config.i().getBorder().getSize() - from.getBlockX()) < 49) {
+            p.sendMessage(Text.text(Lang.i().getCannotInteract()));
             return true;
         }
 
-        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockZ() + Config.BORDER_SIZE.toInteger() - from.getBlockZ()) < 49) {
-            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
+        if (Math.abs(new Vector(Servers.i().getBorder().centerX(),
+                0, Servers.i().getBorder().centerZ()).getBlockZ() + Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
+            p.sendMessage(Text.text(Lang.i().getCannotInteract()));
             return true;
         }
 
-        if (Math.abs(new Vector(Servers.BORDER_CENTER_X.toDouble(),
-                0, Servers.BORDER_CENTER_Z.toDouble()).getBlockX() - Config.BORDER_SIZE.toInteger() - from.getBlockX()) < 49) {
-            p.sendMessage(Lang.CANNOT_INTERACT.toFormattedComponent());
+        if (Math.abs(new Vector(Servers.i().getBorder().centerX(),
+                0, Servers.i().getBorder().centerZ()).getBlockX() - Config.i().getBorder().getSize() - from.getBlockX()) < 49) {
+            p.sendMessage(Text.text(Lang.i().getCannotInteract()));
             return true;
         }
 

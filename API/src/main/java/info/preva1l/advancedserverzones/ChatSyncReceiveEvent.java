@@ -1,7 +1,7 @@
 package info.preva1l.advancedserverzones;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -12,9 +12,9 @@ import java.util.UUID;
 public class ChatSyncReceiveEvent extends Event {
     @Getter private static final HandlerList handlerList = new HandlerList();
     @Getter private final UUID sender;
-    @Getter private final String message;
+    @Getter private final Component message;
 
-    public ChatSyncReceiveEvent(UUID sender, String message) {
+    public ChatSyncReceiveEvent(UUID sender, Component message) {
         super(true);
         this.sender = sender;
         this.message = message;

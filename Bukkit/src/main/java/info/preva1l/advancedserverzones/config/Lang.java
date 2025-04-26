@@ -1,52 +1,54 @@
 package info.preva1l.advancedserverzones.config;
 
+import de.exlll.configlib.*;
 import info.preva1l.advancedserverzones.AdvancedServerZones;
-import info.preva1l.advancedserverzones.util.BasicConfig;
-import info.preva1l.advancedserverzones.util.StringUtils;
-import lombok.AllArgsConstructor;
+import info.preva1l.advancedserverzones.util.Logger;
+import lombok.AccessLevel;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
+import lombok.NoArgsConstructor;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 @Getter
-@AllArgsConstructor
-public enum Lang {
-    RELOADED("reloaded", "&aPlugin Reloaded"),
-    CANNOT_INTERACT("cannot-interact-here", "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!"),
-    BORDER_TITLE("world-border.title", "&cYou have reached the world border!"),
-    BORDER_SUBTITLE("world-border.subtitle", "&7Try exploring a different direction!"),
-    ;
+@Configuration
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("FieldMayBeFinal")
+public class Lang {
+    private static Lang instance;
 
-    private final String path;
-    private final Object defaultValue;
+    private static final String CONFIG_HEADER = """
+            #########################################
+            #          AdvancedServerZones          #
+            #         Language Configuration        #
+            #########################################
+            """;
 
-    public String toString() {
-        String str = AdvancedServerZones.getInstance().getLangFile().getString(path);
-        if (str == null) {
-            return defaultValue.toString();
-        }
-        return str;
+    private String reloaded = "&aAdvancedServerZones Reloaded!";
+    private String cannotInteract = "&7[&4!&7] &cYou cannot interact within &f3 chunks &cof the region border!";
+
+    private Border border = new Border(
+            "&cYou have reached the world border!",
+            "&7Try exploring a different direction!"
+    );
+
+    public record Border(String title, String subtitle) { }
+
+    private static final YamlConfigurationProperties PROPERTIES = YamlConfigurationProperties.newBuilder()
+            .charset(StandardCharsets.UTF_8)
+            .setNameFormatter(NameFormatters.LOWER_KEBAB_CASE)
+            .header(CONFIG_HEADER).build();
+
+    public static void reload() {
+        instance = YamlConfigurations.load(new File(AdvancedServerZones.i().getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
+        Logger.info("Language file automatically reloaded from disk.");
     }
 
-    public Component toFormattedComponent() {
-        String str = AdvancedServerZones.getInstance().getLangFile().getString(path);
-        if (str.equals(path)) {
-            return StringUtils.message(defaultValue.toString());
-        }
-        return StringUtils.message(str);
-    }
-
-    public static void loadDefault() {
-        BasicConfig configFile = AdvancedServerZones.getInstance().getLangFile();
-
-        for (Lang config : Lang.values()) {
-            String path = config.getPath();
-            String str = configFile.getString(path);
-            if (str.equals(path)) {
-                configFile.getConfiguration().set(path, config.getDefaultValue());
-            }
+    public static Lang i() {
+        if (instance == null) {
+            instance = YamlConfigurations.update(new File(AdvancedServerZones.i().getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
+            AutoReload.watch(AdvancedServerZones.i().getDataFolder().toPath(), "lang.yml", Lang::reload);
         }
 
-        configFile.save();
-        configFile.load();
+        return instance;
     }
 }
