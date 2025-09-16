@@ -11,21 +11,19 @@ import net.milkbowl.vault.chat.Chat;
 public class PlaceholderManager {
     @Setter private Chat chat;
     public String getPrefix(Player player) {
-        if (chat != null) {
-            return chat.getPlayerPrefix(player);
-        }
+        if (chat != null) return chat.getPlayerPrefix(player);
+
         return "";
     }
     public String getSuffix(Player player) {
-        if (chat != null) {
-            return chat.getPlayerSuffix(player);
-        }
+        if (chat != null) return chat.getPlayerSuffix(player);
+
         return "";
     }
     public String formatWithPAPI(Player player, String toFormat) {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
             return PlaceholderAPI.setPlaceholders(player, toFormat);
-        }
+
         return toFormat;
     }
 }

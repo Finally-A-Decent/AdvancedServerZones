@@ -38,16 +38,16 @@ public class ImplAdvancedServerZonesAPI extends AdvancedServerZonesAPI {
     @Override
     public boolean isLocationInBorder(Location loc) {
         Vector from = loc.toVector();
-        if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - Config.i().getBorder().getSize() - from.getBlockZ()) < 48) {
+        if (Math.abs(Servers.i().getBorder().centerZ() - Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
             return true;
         }
-        if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + Config.i().getBorder().getSize() - from.getBlockZ()) < 48) {
+        if (Math.abs(Servers.i().getBorder().centerZ() + Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
             return true;
         }
-        if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + Config.i().getBorder().getSize() - from.getBlockX()) < 48) {
+        if (Math.abs(Servers.i().getBorder().centerX() + Config.i().getBorder().getSize() - from.getBlockX()) < 49) {
             return true;
         }
-        return Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - Config.i().getBorder().getSize() - from.getBlockX()) < 48;
+        return Math.abs(Servers.i().getBorder().centerX() - Config.i().getBorder().getSize() - from.getBlockX()) < 49;
     }
 
     @Override
@@ -59,6 +59,6 @@ public class ImplAdvancedServerZonesAPI extends AdvancedServerZonesAPI {
         Message.builder()
                 .type(Message.Type.CHAT_MESSAGE)
                 .payload(Payload.withChatMessage(sender, message))
-                .build().send(Broker.i());
+                .build().send(Broker.instance);
     }
 }

@@ -34,7 +34,7 @@ public class Config {
         @Comment("How many blocks from the center of the world will the border be")
         private int size = 20;
         @Comment("RGB Color of the particles")
-        private List<Integer> color = List.of(0, 0, 0);
+        private List<Integer> color = List.of(184, 50, 172);
 
         private Rainbow rainbow = new Rainbow();
 
@@ -54,7 +54,7 @@ public class Config {
     @Configuration
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ChatSync {
-        private boolean enabled = true;
+        private boolean enabled = false;
         @Comment("Supported: VANILLA, CUSTOM, API")
         private ChatSyncMode mode = ChatSyncMode.VANILLA;
         private String customFormat = "<white>[<#FF0000>%server%<white>] <reset>%prefix%<reset> <white>%player% <dark_gray>> <gray>%message%";
@@ -68,6 +68,7 @@ public class Config {
     public static class Redis {
         private String host = "127.0.0.1";
         private int port = 6379;
+        private String username = "";
         private String password = "abc123";
         private String channel = "advancedserverzones:chat";
     }
@@ -78,14 +79,14 @@ public class Config {
             .header(CONFIG_HEADER).build();
 
     public static void reload() {
-        instance = YamlConfigurations.load(new File(AdvancedServerZones.i().getDataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
+        instance = YamlConfigurations.load(new File(AdvancedServerZones.instance.getDataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
         Logger.info("Configuration automatically reloaded from disk.");
     }
 
     public static Config i() {
         if (instance == null) {
-            instance = YamlConfigurations.update(new File(AdvancedServerZones.i().getDataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
-            AutoReload.watch(AdvancedServerZones.i().getDataFolder().toPath(), "config.yml", Config::reload);
+            instance = YamlConfigurations.update(new File(AdvancedServerZones.instance.getDataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
+            AutoReload.watch(AdvancedServerZones.instance.getDataFolder().toPath(), "config.yml", Config::reload);
         }
 
         return instance;

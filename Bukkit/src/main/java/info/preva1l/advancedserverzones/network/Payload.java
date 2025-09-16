@@ -2,6 +2,7 @@ package info.preva1l.advancedserverzones.network;
 
 import com.google.gson.annotations.Expose;
 import info.preva1l.advancedserverzones.network.types.ChatMessage;
+import info.preva1l.advancedserverzones.network.types.TransferData;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +18,10 @@ public class Payload {
     @Nullable
     @Expose
     private ChatMessage chatMessage;
+
+    @Nullable
+    @Expose
+    private TransferData transferData;
 
     /**
      * Returns an empty cross-server message payload.
@@ -55,11 +60,22 @@ public class Payload {
         return payload;
     }
 
+    @NotNull
+    public static Payload withTransferData(@NotNull TransferData transferData) {
+        final Payload payload = new Payload();
+        payload.transferData = transferData;
+        return payload;
+    }
+
     public Optional<UUID> getUUID() {
         return Optional.ofNullable(uuid);
     }
 
     public Optional<ChatMessage> getChatMessage() {
         return Optional.ofNullable(chatMessage);
+    }
+
+    public Optional<TransferData> getTransferData() {
+        return Optional.ofNullable(transferData);
     }
 }

@@ -5,13 +5,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public record TransferData(@Expose UUID player,
-                           @Expose String targetServer,
-                           @Expose TransferData.Position position,
-                           @Expose int lastPing
+public record TransferData(
+        @Expose UUID player,
+        @Expose String targetServer,
+        @Expose TransferData.Position position,
+        @Expose int lastPing
 ) {
+    public byte[] getNonce() {
+        return (player.toString() + targetServer + lastPing).getBytes(StandardCharsets.UTF_8);
+    }
+
     public record Direction(
             @Expose double x,
             @Expose double y,
@@ -26,13 +32,14 @@ public record TransferData(@Expose UUID player,
         }
     }
 
-    public record Position(@Expose double x,
-                           @Expose double y,
-                           @Expose double z,
-                           @Expose float pitch,
-                           @Expose float yaw,
-                           @Expose Direction direction,
-                           @Expose String world
+    public record Position(
+            @Expose double x,
+            @Expose double y,
+            @Expose double z,
+            @Expose float pitch,
+            @Expose float yaw,
+            @Expose Direction direction,
+            @Expose String world
     ) {
         public static Position from(Location location) {
             return new Position(
@@ -47,6 +54,7 @@ public record TransferData(@Expose UUID player,
         }
 
         public Location predictedLocation(int ping) {
+            if (true) return new Location(Bukkit.getWorld(world), x(), y(), z(), yaw, pitch);
             double pingSeconds = ping / 1000.0 / 2.0;
 
             Vector movement = direction.toVector().multiply(pingSeconds);

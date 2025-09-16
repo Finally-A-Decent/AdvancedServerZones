@@ -5,7 +5,6 @@ import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Lang;
 import info.preva1l.advancedserverzones.config.Servers;
 import info.preva1l.advancedserverzones.network.types.TransferData;
-import info.preva1l.advancedserverzones.util.TaskManager;
 import info.preva1l.advancedserverzones.util.Text;
 import info.preva1l.trashcan.flavor.annotations.Configure;
 import info.preva1l.trashcan.flavor.annotations.Service;
@@ -16,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class BorderService {
@@ -23,51 +23,62 @@ public class BorderService {
 
     @Configure
     public void configure() {
-        TaskManager.Async.runTask(AdvancedServerZones.i(), () -> {
-            int size = Config.i().getBorder().getSize();
-            double centerX = Servers.i().getBorder().centerX();
-            double centerZ = Servers.i().getBorder().centerZ();
-            double north = centerZ - size;
-            double south = centerZ + size;
-            double east = centerX + size;
-            double west = centerX - size;
+        Thread.ofPlatform()
+                .name("AdvancedServerZones Border Ticker")
+                .daemon(true)
+                .start(() -> {
+                    while (AdvancedServerZones.instance.isEnabled()) {
+                        int size = Config.i().getBorder().getSize();
+                        double centerX = Servers.i().getBorder().centerX();
+                        double centerZ = Servers.i().getBorder().centerZ();
+                        double north = centerZ - size;
+                        double south = centerZ + size;
+                        double east = centerX + size;
+                        double west = centerX - size;
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                BorderParticles.sendBorderParticles(p);
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            BorderParticles.sendBorderParticles(p);
 
-                if (p.getLocation().getBlockZ() <= north - 0.5) {
-                    if (Servers.i().getNorth() == null || Servers.i().getNorth().isEmpty()) {
-                        BorderDirection.NORTH.worldBorder(p);
-                        continue;
+                            if (p.getLocation().getBlockZ() <= north - 0.5) {
+                                if (Servers.i().getNorth() == null || Servers.i().getNorth().isEmpty()) {
+                                    BorderDirection.NORTH.worldBorder(p);
+                                    continue;
+                                }
+                                BorderDirection.NORTH.initTransfer(p);
+                            }
+
+                            if (p.getLocation().getBlockZ() >= south) {
+                                if (Servers.i().getSouth() == null || Servers.i().getSouth().isEmpty()) {
+                                    BorderDirection.SOUTH.worldBorder(p);
+                                    continue;
+                                }
+                                BorderDirection.SOUTH.initTransfer(p);
+                            }
+
+                            if (p.getLocation().getBlockX() >= east) {
+                                if (Servers.i().getEast() == null || Servers.i().getEast().isEmpty()) {
+                                    BorderDirection.EAST.worldBorder(p);
+                                    continue;
+                                }
+                                BorderDirection.EAST.initTransfer(p);
+                            }
+
+                            if (p.getLocation().getBlockX() <= west - .5) {
+                                if (Servers.i().getWest() == null || Servers.i().getWest().isEmpty()) {
+                                    BorderDirection.WEST.worldBorder(p);
+                                    continue;
+                                }
+                                BorderDirection.WEST.initTransfer(p);
+                            }
+                        }
+
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(250);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
-                    BorderDirection.NORTH.initTransfer(p);
-                }
-
-                if (p.getLocation().getBlockZ() >= south) {
-                    if (Servers.i().getSouth() == null || Servers.i().getSouth().isEmpty()) {
-                        BorderDirection.SOUTH.worldBorder(p);
-                        continue;
-                    }
-                    BorderDirection.SOUTH.initTransfer(p);
-                }
-
-                if (p.getLocation().getBlockX() >= east) {
-                    if (Servers.i().getEast() == null || Servers.i().getEast().isEmpty()) {
-                        BorderDirection.EAST.worldBorder(p);
-                        continue;
-                    }
-                    BorderDirection.EAST.initTransfer(p);
-                }
-
-                if (p.getLocation().getBlockX() <= west - .5) {
-                    if (Servers.i().getWest() == null || Servers.i().getWest().isEmpty()) {
-                        BorderDirection.WEST.worldBorder(p);
-                        continue;
-                    }
-                    BorderDirection.WEST.initTransfer(p);
-                }
-            }
-        }, 5L);
+                });
     }
 
     public enum BorderDirection {
@@ -75,6 +86,7 @@ public class BorderService {
             @Override
             public void initTransfer(Player p) {
                 ConnectionService.instance.transferServer(
+                        p,
                         new TransferData(
                                 p.getUniqueId(),
                                 Servers.i().getNorth(),
@@ -95,6 +107,7 @@ public class BorderService {
             @Override
             public void initTransfer(Player p) {
                 ConnectionService.instance.transferServer(
+                        p,
                         new TransferData(
                                 p.getUniqueId(),
                                 Servers.i().getSouth(),
@@ -115,6 +128,7 @@ public class BorderService {
             @Override
             public void initTransfer(Player p) {
                 ConnectionService.instance.transferServer(
+                        p,
                         new TransferData(
                                 p.getUniqueId(),
                                 Servers.i().getEast(),
@@ -135,6 +149,7 @@ public class BorderService {
             @Override
             public void initTransfer(Player p) {
                 ConnectionService.instance.transferServer(
+                        p,
                         new TransferData(
                                 p.getUniqueId(),
                                 Servers.i().getWest(),

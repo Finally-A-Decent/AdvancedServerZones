@@ -5,12 +5,12 @@ import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Servers;
 import info.preva1l.advancedserverzones.util.Cuboid;
 import lombok.experimental.UtilityClass;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 @UtilityClass
 public class BorderParticles {
@@ -40,8 +40,8 @@ public class BorderParticles {
             if (visible == null) continue;
 
             for (int[] point : visible.getAllPoints()) {
-                new ParticleBuilder(Particle.REDSTONE)
-                        .color(getColor(point))
+                new ParticleBuilder(Objects.requireNonNull(Registry.PARTICLE_TYPE.get(NamespacedKey.minecraft("dust"))))
+                        .color(getColor(point), 2)
                         .location(new Location(p.getWorld(), point[0], point[1], point[2]))
                         .receivers(p)
                         .spawn();

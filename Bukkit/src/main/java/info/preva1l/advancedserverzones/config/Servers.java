@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +34,7 @@ public class Servers {
             #########################################
             """;
 
-    private String current = Bukkit.getServer().getName();
+    private String current = "survival-zone-03";
     private String north = "survival-zone-01";
     private String south = "survival-zone-06";
     private String east = "survival-spawn-01";
@@ -49,14 +50,14 @@ public class Servers {
             .header(CONFIG_HEADER).build();
 
     public static void reload() {
-        instance = YamlConfigurations.load(new File(AdvancedServerZones.i().getDataFolder(), "server.yml").toPath(), Servers.class, PROPERTIES);
+        instance = YamlConfigurations.load(new File(AdvancedServerZones.instance.getDataFolder(), "server.yml").toPath(), Servers.class, PROPERTIES);
         Logger.info("Servers configuration automatically reloaded from disk.");
     }
 
     public static Servers i() {
         if (instance == null) {
-            instance = YamlConfigurations.update(new File(AdvancedServerZones.i().getDataFolder(), "server.yml").toPath(), Servers.class, PROPERTIES);
-            AutoReload.watch(AdvancedServerZones.i().getDataFolder().toPath(), "server.yml", Servers::reload);
+            instance = YamlConfigurations.update(new File(AdvancedServerZones.instance.getDataFolder(), "server.yml").toPath(), Servers.class, PROPERTIES);
+            AutoReload.watch(AdvancedServerZones.instance.getDataFolder().toPath(), "server.yml", Servers::reload);
         }
 
         return instance;

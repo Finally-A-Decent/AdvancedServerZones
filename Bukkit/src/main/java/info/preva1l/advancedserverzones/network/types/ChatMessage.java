@@ -5,5 +5,8 @@ import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 
-public record ChatMessage(@Expose UUID player, @Expose Component message) {
+public record ChatMessage(
+        @Expose UUID player,
+        @Expose Component message
+) {
 }

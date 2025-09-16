@@ -39,14 +39,14 @@ public class Lang {
             .header(CONFIG_HEADER).build();
 
     public static void reload() {
-        instance = YamlConfigurations.load(new File(AdvancedServerZones.i().getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
+        instance = YamlConfigurations.load(new File(AdvancedServerZones.instance.getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
         Logger.info("Language file automatically reloaded from disk.");
     }
 
     public static Lang i() {
         if (instance == null) {
-            instance = YamlConfigurations.update(new File(AdvancedServerZones.i().getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
-            AutoReload.watch(AdvancedServerZones.i().getDataFolder().toPath(), "lang.yml", Lang::reload);
+            instance = YamlConfigurations.update(new File(AdvancedServerZones.instance.getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
+            AutoReload.watch(AdvancedServerZones.instance.getDataFolder().toPath(), "lang.yml", Lang::reload);
         }
 
         return instance;

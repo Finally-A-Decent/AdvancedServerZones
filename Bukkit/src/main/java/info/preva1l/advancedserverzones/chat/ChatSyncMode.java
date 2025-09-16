@@ -21,7 +21,7 @@ public enum ChatSyncMode {
             Message.builder()
                     .type(Message.Type.CHAT_MESSAGE)
                     .payload(Payload.withChatMessage(event.getPlayer().getUniqueId(), event.message()))
-                    .build().send(Broker.i());
+                    .build().send(Broker.instance);
         }
 
         @Override
@@ -47,7 +47,7 @@ public enum ChatSyncMode {
                             event.getPlayer().getUniqueId(),
                             Text.text(PlaceholderManager.formatWithPAPI(event.getPlayer(), formattedString)))
                     )
-                    .build().send(Broker.i());
+                    .build().send(Broker.instance);
         }
 
         @Override

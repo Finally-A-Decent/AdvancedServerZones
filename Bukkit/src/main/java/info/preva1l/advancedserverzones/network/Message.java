@@ -20,8 +20,8 @@ public class Message {
     }
 
     public enum Type {
+        TRANSFER,
         CHAT_MESSAGE,
-
         RELOAD,
     }
 }

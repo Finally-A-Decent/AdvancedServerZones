@@ -46,6 +46,7 @@ public class AutoReload {
 
                         if (var1.toString().endsWith(fileName)) {
                             callback.run();
+                            break;
                         }
                     }
 
