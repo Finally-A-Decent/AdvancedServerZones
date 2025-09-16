@@ -1,6 +1,6 @@
 package info.preva1l.advancedserverzones.util;
 
-public class Cuboid {
+public final class Cuboid {
     private final int minX, minY, minZ, maxX, maxY, maxZ;
 
     public Cuboid(int x1, int y1, int z1, int x2, int y2, int z2) {

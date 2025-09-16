@@ -2,8 +2,7 @@ package info.preva1l.advancedserverzones.config;
 
 import de.exlll.configlib.*;
 import info.preva1l.advancedserverzones.AdvancedServerZones;
-import info.preva1l.advancedserverzones.chat.ChatSyncMode;
-import info.preva1l.advancedserverzones.util.Logger;
+import info.preva1l.advancedserverzones.chat.ChatSyncService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.List;
 @Configuration
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings("FieldMayBeFinal")
-public class Config {
+public final class Config {
     private static Config instance;
 
     private static final String CONFIG_HEADER = """
@@ -33,6 +32,9 @@ public class Config {
     public static class Border {
         @Comment("How many blocks from the center of the world will the border be")
         private int size = 20;
+        @Comment({"How many blocks from the borders should we prevent world modification.", "Recommended: 48 (3 chunks)"})
+        private int interactionRadius = 48;
+
         @Comment("RGB Color of the particles")
         private List<Integer> color = List.of(184, 50, 172);
 
@@ -48,15 +50,15 @@ public class Config {
         }
     }
 
-    private ChatSync chatsync = new ChatSync();
+    private ChatSyncConfig chatsync = new ChatSyncConfig();
 
     @Getter
     @Configuration
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ChatSync {
+    public static class ChatSyncConfig {
         private boolean enabled = false;
         @Comment("Supported: VANILLA, CUSTOM, API")
-        private ChatSyncMode mode = ChatSyncMode.VANILLA;
+        private ChatSyncService.ChatSyncMode mode = ChatSyncService.ChatSyncMode.VANILLA;
         private String customFormat = "<white>[<#FF0000>%server%<white>] <reset>%prefix%<reset> <white>%player% <dark_gray>> <gray>%message%";
     }
 
@@ -80,7 +82,7 @@ public class Config {
 
     public static void reload() {
         instance = YamlConfigurations.load(new File(AdvancedServerZones.instance.getDataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
-        Logger.info("Configuration automatically reloaded from disk.");
+        AdvancedServerZones.instance.getLogger().info("Configuration automatically reloaded from disk.");
     }
 
     public static Config i() {

@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Preva1l
  */
-public class GsonCodec extends BaseCodec {
+public final class GsonCodec extends BaseCodec {
     private Gson gson;
     private final Map<String, Class<?>> classMap = new ConcurrentHashMap<>();
 

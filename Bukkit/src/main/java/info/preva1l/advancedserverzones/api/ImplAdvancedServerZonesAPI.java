@@ -1,8 +1,8 @@
 package info.preva1l.advancedserverzones.api;
 
 import info.preva1l.advancedserverzones.AdvancedServerZonesAPI;
+import info.preva1l.advancedserverzones.chat.ChatSyncService;
 import info.preva1l.advancedserverzones.config.Config;
-import info.preva1l.advancedserverzones.chat.ChatSyncMode;
 import info.preva1l.advancedserverzones.config.Servers;
 import info.preva1l.advancedserverzones.network.Broker;
 import info.preva1l.advancedserverzones.network.Message;
@@ -11,50 +11,58 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
-@SuppressWarnings("unused")
-public class ImplAdvancedServerZonesAPI extends AdvancedServerZonesAPI {
+public final class ImplAdvancedServerZonesAPI extends AdvancedServerZonesAPI {
     @Override
-    public boolean isChunkInBorder(Chunk chunk) {
+    public boolean isChunkNearBorder(Chunk chunk) {
+        int size = Config.i().getBorder().getSize();
+        int interactionRadius = Config.i().getBorder().getInteractionRadius() + 1;
+        int centerZ = Servers.i().getBorder().flooredCenterZ();
+        int centerX = Servers.i().getBorder().flooredCenterX();
+        int chunkWorldX = chunk.getX() >> 4;
+        int chunkWorldZ = chunk.getZ() >> 4;
+
         for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                Block block = chunk.getBlock(x, 0, z);
-                if (isBlockInBorder(block)) {
-                    return true;
-                }
-            }
+            int worldX = chunkWorldX + x;
+            if (Math.abs(centerX + size - worldX) < interactionRadius) return true;
+            if (Math.abs(centerX - size - worldX) < interactionRadius) return true;
         }
+
+        for (int z = 0; z < 16; z++) {
+            int worldZ = chunkWorldZ + z;
+            if (Math.abs(centerZ - size - worldZ) < interactionRadius) return true;
+            if (Math.abs(centerZ + size - worldZ) < interactionRadius) return true;
+        }
+
         return false;
     }
 
     @Override
-    public boolean isBlockInBorder(Block block) {
-        return isLocationInBorder(block.getLocation());
+    public boolean isBlockNearBorder(Block block) {
+        return isLocationNearBorder(block.getLocation());
     }
 
     @Override
-    public boolean isLocationInBorder(Location loc) {
-        Vector from = loc.toVector();
-        if (Math.abs(Servers.i().getBorder().centerZ() - Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
-            return true;
-        }
-        if (Math.abs(Servers.i().getBorder().centerZ() + Config.i().getBorder().getSize() - from.getBlockZ()) < 49) {
-            return true;
-        }
-        if (Math.abs(Servers.i().getBorder().centerX() + Config.i().getBorder().getSize() - from.getBlockX()) < 49) {
-            return true;
-        }
-        return Math.abs(Servers.i().getBorder().centerX() - Config.i().getBorder().getSize() - from.getBlockX()) < 49;
+    public boolean isLocationNearBorder(Location loc) {
+        int locZ = loc.getBlockZ();
+        int locX = loc.getBlockX();
+        int size = Config.i().getBorder().getSize();
+        int interactionRadius = Config.i().getBorder().getInteractionRadius() + 1;
+        int centerZ = Servers.i().getBorder().flooredCenterZ();
+        int centerX = Servers.i().getBorder().flooredCenterX();
+
+        if (Math.abs(centerZ - size - locZ) < interactionRadius) return true;
+        if (Math.abs(centerZ + size - locZ) < interactionRadius) return true;
+        if (Math.abs(centerX + size - locX) < interactionRadius) return true;
+        return Math.abs(centerX - size - locX) < interactionRadius;
     }
 
     @Override
     public void sendChatSyncMessage(UUID sender, Component message) {
-        if (!Config.i().getChatsync().isEnabled() || Config.i().getChatsync().getMode() != ChatSyncMode.API) {
-            return;
-        }
+        if (!Config.i().getChatsync().isEnabled() ||
+                Config.i().getChatsync().getMode() != ChatSyncService.ChatSyncMode.API) return;
 
         Message.builder()
                 .type(Message.Type.CHAT_MESSAGE)

@@ -9,31 +9,30 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
 
-@SuppressWarnings("unused")
 public abstract class AdvancedServerZonesAPI {
     @Getter private static AdvancedServerZonesAPI instance;
 
     /**
-     * Check if a chunk is inside the region border
+     * Check if a chunk is inside or within the configured radius of the region border
      * Does full scan on X and Z, Y is locked to 0
      * @param chunk the chunk to check
      * @return true or false if there is at least one block in the chunk that is in the border
      */
-    public abstract boolean isChunkInBorder(Chunk chunk);
+    public abstract boolean isChunkNearBorder(Chunk chunk);
 
     /**
-     * Check if a block is inside the region border
+     * Check if a block is inside or within the configured radius of the region border
      * @param block the block to check
      * @return true or false whether it is the border or not
      */
-    public abstract boolean isBlockInBorder(Block block);
+    public abstract boolean isBlockNearBorder(Block block);
 
     /**
-     * Check if a location is inside the region border
+     * Check if a location is inside or within the configured radius of the region border.
      * @param loc the location to check
      * @return true or false whether it is the border or not
      */
-    public abstract boolean isLocationInBorder(Location loc);
+    public abstract boolean isLocationNearBorder(Location loc);
 
     /**
      * Send a chat message using chat sync, works no matter what mode is selected.
@@ -45,9 +44,7 @@ public abstract class AdvancedServerZonesAPI {
 
     @ApiStatus.Internal
     public static void setInstance(AdvancedServerZonesAPI newInstance) {
-        if (instance != null) {
-            throw new IllegalStateException("Instance has already been set!");
-        }
+        if (instance != null) throw new IllegalStateException("ASZ api instance has already been set!");
         instance = newInstance;
     }
 }

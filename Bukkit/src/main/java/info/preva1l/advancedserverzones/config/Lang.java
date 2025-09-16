@@ -2,7 +2,6 @@ package info.preva1l.advancedserverzones.config;
 
 import de.exlll.configlib.*;
 import info.preva1l.advancedserverzones.AdvancedServerZones;
-import info.preva1l.advancedserverzones.util.Logger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings("FieldMayBeFinal")
-public class Lang {
+public final class Lang {
     private static Lang instance;
 
     private static final String CONFIG_HEADER = """
@@ -40,7 +39,7 @@ public class Lang {
 
     public static void reload() {
         instance = YamlConfigurations.load(new File(AdvancedServerZones.instance.getDataFolder(), "lang.yml").toPath(), Lang.class, PROPERTIES);
-        Logger.info("Language file automatically reloaded from disk.");
+        AdvancedServerZones.instance.getLogger().info("Language file automatically reloaded from disk.");
     }
 
     public static Lang i() {

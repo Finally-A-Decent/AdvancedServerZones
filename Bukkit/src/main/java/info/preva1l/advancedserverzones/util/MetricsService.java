@@ -11,7 +11,7 @@ import info.preva1l.trashcan.flavor.annotations.Service;
  * @author Preva1l
  */
 @Service
-public class MetricsService {
+public final class MetricsService {
     public static final MetricsService instance = new MetricsService();
     private static final int METRICS_ID = 23558;
 

@@ -1,8 +1,9 @@
 package info.preva1l.advancedserverzones.network;
 
 import com.google.gson.annotations.Expose;
-import info.preva1l.advancedserverzones.network.types.ChatMessage;
-import info.preva1l.advancedserverzones.network.types.TransferData;
+import info.preva1l.advancedserverzones.chat.ChatMessage;
+import info.preva1l.advancedserverzones.borders.transfer.TransferData;
+import info.preva1l.advancedserverzones.world.WorldState;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,10 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Payload {
+public final class Payload {
     @Nullable
     @Expose
-    private UUID uuid;
+    private WorldState worldState;
 
     @Nullable
     @Expose
@@ -34,15 +35,15 @@ public class Payload {
     }
 
     /**
-     * Returns a payload containing a {@link UUID}.
+     * Returns a payload containing a {@link WorldState}.
      *
-     * @param uuid the uuid to send
-     * @return a payload containing the uuid
+     * @param worldState the world state to send
+     * @return a payload containing world state
      */
     @NotNull
-    public static Payload withUUID(@NotNull UUID uuid) {
+    public static Payload withWorldState(@NotNull WorldState worldState) {
         final Payload payload = new Payload();
-        payload.uuid = uuid;
+        payload.worldState = worldState;
         return payload;
     }
 
@@ -67,8 +68,8 @@ public class Payload {
         return payload;
     }
 
-    public Optional<UUID> getUUID() {
-        return Optional.ofNullable(uuid);
+    public Optional<WorldState> getWorldState() {
+        return Optional.ofNullable(worldState);
     }
 
     public Optional<ChatMessage> getChatMessage() {

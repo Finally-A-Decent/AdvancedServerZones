@@ -1,4 +1,4 @@
-package info.preva1l.advancedserverzones.network.types;
+package info.preva1l.advancedserverzones.borders.transfer;
 
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;

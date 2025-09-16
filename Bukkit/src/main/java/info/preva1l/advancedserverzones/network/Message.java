@@ -1,16 +1,16 @@
 package info.preva1l.advancedserverzones.network;
 
 import com.google.gson.annotations.Expose;
+import info.preva1l.advancedserverzones.config.Servers;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 @Getter
 @AllArgsConstructor
 @Builder
-public class Message {
+public final class Message {
+    @Expose @Builder.Default private String sender = Servers.i().getCurrent();
     @Expose private Type type;
     @Expose private Payload payload;
 
@@ -22,6 +22,13 @@ public class Message {
     public enum Type {
         TRANSFER,
         CHAT_MESSAGE,
-        RELOAD,
+        WORLD_STATE,
+
+        ZONE_HEARTBEAT,
+        ZONE_STOP,
+
+        LEADER_ELECTION_START,
+        LEADER_ELECTION_VOTE,
+        LEADER_ELECTION_CHOSEN,
     }
 }

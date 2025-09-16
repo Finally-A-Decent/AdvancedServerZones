@@ -4,18 +4,31 @@ import com.destroystokyo.paper.ParticleBuilder;
 import info.preva1l.advancedserverzones.config.Config;
 import info.preva1l.advancedserverzones.config.Servers;
 import info.preva1l.advancedserverzones.util.Cuboid;
-import lombok.experimental.UtilityClass;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
-@UtilityClass
-public class BorderParticles {
-    @NotNull
-    private Color getColor(int[] point) {
+public final class BorderParticles {
+    public static void sendBorderParticles(Player p) {
+        Vector from = p.getLocation().toVector();
+        for (BorderDirection direction : BorderDirection.values()) {
+            Cuboid visible = direction.getVisibleBorder(from);
+            if (visible == null) continue;
+
+            for (int[] point : visible.getAllPoints()) {
+                new ParticleBuilder(Objects.requireNonNull(Registry.PARTICLE_TYPE.get(NamespacedKey.minecraft("dust"))))
+                        .color(getColor(point), 2)
+                        .location(new Location(p.getWorld(), point[0], point[1], point[2]))
+                        .receivers(p)
+                        .spawn();
+            }
+        }
+    }
+
+    private static @NonNull Color getColor(int[] point) {
         Color color;
         if (Config.i().getBorder().getRainbow().isEnabled()) {
             float hue = Math.abs(point[1]) / 100f;
@@ -33,37 +46,21 @@ public class BorderParticles {
         return color;
     }
 
-    public void sendBorderParticles(Player p) {
-        Vector from = p.getLocation().toVector();
-        for (BorderDirection direction : BorderDirection.values()) {
-            Cuboid visible = direction.getVisibleBorder(from);
-            if (visible == null) continue;
-
-            for (int[] point : visible.getAllPoints()) {
-                new ParticleBuilder(Objects.requireNonNull(Registry.PARTICLE_TYPE.get(NamespacedKey.minecraft("dust"))))
-                        .color(getColor(point), 2)
-                        .location(new Location(p.getWorld(), point[0], point[1], point[2]))
-                        .receivers(p)
-                        .spawn();
-            }
-        }
-    }
-
     private enum BorderDirection {
         NORTH {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
                 int size = Config.i().getBorder().getSize();
-                if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - size - from.getBlockZ()) > 16)
+                if (Math.abs(Servers.i().getBorder().flooredCenterZ() - size - from.getBlockZ()) > 16)
                     return null;
 
                 return new Cuboid(
-                        Math.max(from.getBlockX() - 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - size),
+                        Math.max(from.getBlockX() - 10, Servers.i().getBorder().flooredCenterX() - size),
                         from.getBlockY() - 1,
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - size,
-                        Math.min(from.getBlockX() + 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + size),
+                        Servers.i().getBorder().flooredCenterZ() - size,
+                        Math.min(from.getBlockX() + 10, Servers.i().getBorder().flooredCenterX() + size),
                         from.getBlockY() + 5,
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - size
+                        Servers.i().getBorder().flooredCenterZ() - size
                 );
             }
         },
@@ -71,16 +68,16 @@ public class BorderParticles {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
                 int size = Config.i().getBorder().getSize();
-                if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + size - from.getBlockX()) > 16)
+                if (Math.abs(Servers.i().getBorder().flooredCenterX() + size - from.getBlockX()) > 16)
                     return null;
 
                 return new Cuboid(
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + size,
+                         Servers.i().getBorder().flooredCenterX() + size,
                         from.getBlockY() - 1,
-                        Math.max(from.getBlockZ() - 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - size),
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + size,
+                        Math.max(from.getBlockZ() - 10, Servers.i().getBorder().flooredCenterZ() - size),
+                        Servers.i().getBorder().flooredCenterX() + size,
                         from.getBlockY() + 5,
-                        Math.min(from.getBlockZ() + 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + size)
+                        Math.min(from.getBlockZ() + 10, Servers.i().getBorder().flooredCenterZ() + size)
                 );
             }
         },
@@ -88,16 +85,16 @@ public class BorderParticles {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
                 int size = Config.i().getBorder().getSize();
-                if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + size - from.getBlockZ()) > 16)
+                if (Math.abs(Servers.i().getBorder().flooredCenterZ() + size - from.getBlockZ()) > 16)
                     return null;
 
                 return new Cuboid(
-                        Math.max(from.getBlockX() - 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - size),
+                        Math.max(from.getBlockX() - 10, Servers.i().getBorder().flooredCenterX() - size),
                         from.getBlockY() - 1,
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + size,
-                        Math.min(from.getBlockX() + 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() + size),
+                        Servers.i().getBorder().flooredCenterZ() + size,
+                        Math.min(from.getBlockX() + 10, Servers.i().getBorder().flooredCenterX() + size),
                         from.getBlockY() + 5,
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + size
+                        Servers.i().getBorder().flooredCenterZ() + size
                 );
             }
         },
@@ -105,16 +102,16 @@ public class BorderParticles {
             @Override
             public Cuboid getVisibleBorder(Vector from) {
                 int size = Config.i().getBorder().getSize();
-                if (Math.abs(new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - size - from.getBlockX()) > 16)
+                if (Math.abs(Servers.i().getBorder().flooredCenterX() - size - from.getBlockX()) > 16)
                     return null;
 
                 return new Cuboid(
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - size,
+                        Servers.i().getBorder().flooredCenterX() - size,
                         from.getBlockY() - 1,
-                        Math.max(from.getBlockZ() - 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() - size),
-                        new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockX() - size,
+                        Math.max(from.getBlockZ() - 10, Servers.i().getBorder().flooredCenterZ() - size),
+                        Servers.i().getBorder().flooredCenterX() - size,
                         from.getBlockY() + 5,
-                        Math.min(from.getBlockZ() + 10, new Vector(Servers.i().getBorder().centerX(), 0, Servers.i().getBorder().centerZ()).getBlockZ() + size)
+                        Math.min(from.getBlockZ() + 10, Servers.i().getBorder().flooredCenterZ() + size)
                 );
             }
         };

@@ -30,6 +30,7 @@ dependencies {
     trashcan()
 
     library(libs.redisson)
+    library(libs.adventure.gson)
 
     dependency(libs.vault(), "Vault") { load = RLO.BEFORE ; required = false }
     dependency(libs.placeholderapi(), "PlaceholderAPI") { load = RLO.BEFORE ; required = false }

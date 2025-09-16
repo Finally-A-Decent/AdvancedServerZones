@@ -4,8 +4,12 @@ redisson = "3.50.0"
 vault = "1.7"
 placeholderapi = "2.11.6"
 
+adventure = "4.21.0"
+
 [libraries]
 redisson = { module = "org.redisson:redisson", version.ref = "redisson" }
 
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
+
+adventure-gson = { module = "net.kyori:adventure-text-serializer-gson", version.ref = "adventure" }

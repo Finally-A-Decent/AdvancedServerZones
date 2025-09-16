@@ -1,4 +1,4 @@
-package info.preva1l.advancedserverzones.borders;
+package info.preva1l.advancedserverzones.borders.transfer;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -8,12 +8,10 @@ import info.preva1l.advancedserverzones.AdvancedServerZones;
 import info.preva1l.advancedserverzones.network.Broker;
 import info.preva1l.advancedserverzones.network.Message;
 import info.preva1l.advancedserverzones.network.Payload;
-import info.preva1l.advancedserverzones.network.types.TransferData;
 import info.preva1l.trashcan.flavor.annotations.Configure;
 import info.preva1l.trashcan.flavor.annotations.Service;
 import io.papermc.paper.event.connection.configuration.AsyncPlayerConnectionConfigureEvent;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -26,8 +24,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class ConnectionService implements Listener {
-    public static final ConnectionService instance = new ConnectionService();
+public final class TransferService implements Listener {
+    public static final TransferService instance = new TransferService();
     private static final NamespacedKey COOKIE_KEY = new NamespacedKey("advancedserverzones", "transferring");
 
     private final Cache<UUID, TransferData> cache = CacheBuilder.newBuilder()
@@ -41,6 +39,7 @@ public class ConnectionService implements Listener {
     @Configure
     public void configure() {
         Bukkit.getPluginManager().registerEvents(this, AdvancedServerZones.instance);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(AdvancedServerZones.instance, "BungeeCord");
     }
 
     public void addData(TransferData data) {
@@ -52,8 +51,7 @@ public class ConnectionService implements Listener {
      *
      * @param data the data of the transfer
      */
-    @SneakyThrows
-    public void transferServer(Player player, TransferData data) {
+    public void initiateTransfer(Player player, TransferData data) {
         if (transferred.asMap().containsKey(data.player())) return;
         transferred.put(data.player(), true);
         Message.builder()
@@ -62,30 +60,27 @@ public class ConnectionService implements Listener {
                 .build()
                 .send(Broker.instance);
 
-        /* Seamless to be reworked
-        double viewRadius = player.getClientViewDistance() * 16;
-        for (Entity entity : player.getNearbyEntities(viewRadius, viewRadius, viewRadius)) {
-            if (entity.getUniqueId().equals(player.getUniqueId())) continue;
-            player.hideEntity(AdvancedServerZones.i(), entity);
-        }
+        //<editor-fold desc="seamless transfers to be reworked">
+//        double viewRadius = player.getClientViewDistance() * 16;
+//        for (Entity entity : player.getNearbyEntities(viewRadius, viewRadius, viewRadius)) {
+//            if (entity.getUniqueId().equals(player.getUniqueId())) continue;
+//            player.hideEntity(AdvancedServerZones.i(), entity);
+//        }
+//
+//        List<BossBar> bars = new ArrayList<>();
+//        player.boss().forEach(bars::add);
+//        bars.forEach(player::hideBossBar);
+        //</editor-fold>
 
-        List<BossBar> bars = new ArrayList<>();
-        player.boss().forEach(bars::add);
-        bars.forEach(player::hideBossBar);
-        */
-
-        if (player.getProtocolVersion() >= 766) {
-            player.storeCookie(COOKIE_KEY, data.getNonce());
-        }
+        if (player.getProtocolVersion() >= 766) player.storeCookie(COOKIE_KEY, data.getNonce()); // only if client is 1.20.5+
 
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Connect");
         output.writeUTF(data.targetServer());
-        Objects.requireNonNull(Bukkit.getPlayer(data.player())).sendPluginMessage(AdvancedServerZones.instance, "BungeeCord", output.toByteArray());
+        player.sendPluginMessage(AdvancedServerZones.instance, "BungeeCord", output.toByteArray());
     }
 
-    @Getter private final Map<UUID, Integer> ids = new HashMap<>();
-
+    @SuppressWarnings("UnstableApiUsage")
     @EventHandler
     public void preConnect(AsyncPlayerConnectionConfigureEvent event) {
         byte[] data = null;
@@ -109,13 +104,14 @@ public class ConnectionService implements Listener {
 
     @EventHandler
     public void playJoinEvent(PlayerSpawnLocationEvent e) {
-        /* Seamless to be reworked
-        CraftPlayer player = (CraftPlayer) e.getPlayer();
-        ServerPlayer p = player.getHandle();
-        p.setId(ids.get(p.getUUID()));
-        e.getPlayer().showEntity(AdvancedServerZones.i(), e.getPlayer());
-        e.getPlayer().showPlayer(AdvancedServerZones.i(), e.getPlayer());
-        */
+        //<editor-fold desc="seamless transfers to be reworked">
+//        CraftPlayer player = (CraftPlayer) e.getPlayer();
+//        ServerPlayer p = player.getHandle();
+//        p.setId(ids.get(p.getUUID()));
+//        e.getPlayer().showEntity(AdvancedServerZones.i(), e.getPlayer());
+//        e.getPlayer().showPlayer(AdvancedServerZones.i(), e.getPlayer());
+        //</editor-fold>
+
         TransferData data = cache.asMap().remove(e.getPlayer().getUniqueId());
         if (data == null) return;
 
